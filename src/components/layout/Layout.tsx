@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <span className="font-bold text-lg">SKLedger</span>
             </div>
             <NavLink
-              to="/"
+              to="/dashboard"
               className={({ isActive }) =>
                 `text-sm font-medium transition-colors hover:text-primary flex items-center gap-2 ${isActive ? 'text-primary' : 'text-muted-foreground'}`
               }

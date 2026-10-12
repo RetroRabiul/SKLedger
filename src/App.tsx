@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
+import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Clients from './pages/Clients'
 import Projects from './pages/Projects'
@@ -10,9 +11,10 @@ import ProtectedRoute from './components/ProtectedRoute'
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Landing />} />
       <Route path="/auth" element={<Auth />} />
       <Route
-        path="/"
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <Layout>
