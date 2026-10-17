@@ -1,0 +1,390 @@
+import type { LanguageId } from '../types'
+
+/**
+ * Single source of truth for all UI strings. Each entry holds every language,
+ * so a missing translation is a compile-time error rather than a runtime blank.
+ */
+export const messages = {
+  // common -----------------------------------------------------------------
+  'common.save': { en: 'Save', bn: 'সংরক্ষণ' },
+  'common.cancel': { en: 'Cancel', bn: 'বাতিল' },
+  'common.delete': { en: 'Delete', bn: 'মুছুন' },
+  'common.edit': { en: 'Edit', bn: 'এডিট' },
+  'common.add': { en: 'Add', bn: 'যোগ' },
+  'common.close': { en: 'Close', bn: 'বন্ধ' },
+  'common.search': { en: 'Search', bn: 'খুঁজুন' },
+  'common.loading': { en: 'Loading...', bn: 'লোড হচ্ছে...' },
+  'common.noData': { en: 'No data', bn: 'কোনো ডেটা নেই' },
+  'common.confirm': { en: 'Confirm', bn: 'নিশ্চিত' },
+  'common.yes': { en: 'Yes', bn: 'হ্যাঁ' },
+  'common.no': { en: 'No', bn: 'না' },
+  'common.back': { en: 'Back', bn: 'পেছনে' },
+  'common.actions': { en: 'Actions', bn: 'অ্যাকশন' },
+  'common.total': { en: 'Total', bn: 'মোট' },
+  'common.status': { en: 'Status', bn: 'স্টেটাস' },
+  'common.date': { en: 'Date', bn: 'তারিখ' },
+  'common.amount': { en: 'Amount', bn: 'টাকা' },
+  'common.notes': { en: 'Notes', bn: 'নোট' },
+  'common.optional': { en: 'optional', bn: 'ঐচ্ছিক' },
+  'common.required': { en: 'required', bn: 'আবশ্যক' },
+  'common.all': { en: 'All', bn: 'সব' },
+  'common.none': { en: 'None', bn: 'কিছু নেই' },
+  'common.name': { en: 'Name', bn: 'নাম' },
+  'common.email': { en: 'Email', bn: 'ইমেইল' },
+  'common.phone': { en: 'Phone', bn: 'ফোন' },
+  'common.company': { en: 'Company', bn: 'প্রতিষ্ঠান' },
+  'common.description': { en: 'Description', bn: 'বিবরণ' },
+  'common.category': { en: 'Category', bn: 'ক্যাটাগরি' },
+  'common.dueDate': { en: 'Due date', bn: 'ডেডলাইন' },
+  'common.startDate': { en: 'Start date', bn: 'শুরুর তারিখ' },
+  'common.completed': { en: 'Completed', bn: 'সম্পন্ন' },
+  'common.projectCount': { en: 'Projects', bn: 'প্রজেক্ট' },
+  'common.usage': { en: 'Usage', bn: 'ব্যবহার' },
+  'common.upgrade': { en: 'Upgrade', bn: 'আপগ্রেড' },
+  'common.upgradeNow': { en: 'Upgrade now', bn: 'এখনই আপগ্রেড' },
+  'common.saved': { en: 'Saved', bn: 'সংরক্ষিত' },
+  'common.deleted': { en: 'Deleted', bn: 'মুছে ফেলা হয়েছে' },
+  'common.error': { en: 'Something went wrong', bn: 'কিছু ভুল হয়েছে' },
+  'common.of': { en: 'of', bn: '/' },
+  'common.currency': { en: 'Currency', bn: 'মুদ্রা' },
+  'common.language': { en: 'Language', bn: 'ভাষা' },
+  'common.theme': { en: 'Theme', bn: 'থিম' },
+  'common.logout': { en: 'Sign out', bn: 'সাইন আউট' },
+  'common.signIn': { en: 'Sign in', bn: 'সাইন ইন' },
+  'common.getStarted': { en: 'Get started', bn: 'শুরু করুন' },
+  'common.welcome': { en: 'Welcome', bn: 'স্বাগতম' },
+
+  // nav --------------------------------------------------------------------
+  'nav.dashboard': { en: 'Dashboard', bn: 'ড্যাশবোর্ড' },
+  'nav.clients': { en: 'Clients', bn: 'ক্লায়েন্ট' },
+  'nav.projects': { en: 'Projects', bn: 'প্রজেক্ট' },
+  'nav.invoices': { en: 'Invoices', bn: 'ইনভয়েস' },
+  'nav.settings': { en: 'Settings', bn: 'সেটিংস' },
+  'nav.admin': { en: 'Admin', bn: 'অ্যাডমিন' },
+
+  // landing ----------------------------------------------------------------
+  'landing.badge': {
+    en: 'Built for freelancers & studios',
+    bn: 'ফ্রিল্যান্সার ও স্টুডিওর জন্য',
+  },
+  'landing.hero.title': {
+    en: 'Track your freelance revenue without the spreadsheet chaos',
+    bn: 'স্প্রেডশিটের ঝামেলা ছাড়াই আয়ের হিসাব রাখুন',
+  },
+  'landing.hero.subtitle': {
+    en: 'SKLedger brings clients, projects, advances and payments together so you always know what you have earned and what is still pending.',
+    bn: 'SKLedger ক্লায়েন্ট, প্রজেক্ট, অ্যাডভান্স ও পেমেন্ট একসাথে রাখে, যাতে জানা থাকে কত আয় হয়েছে আর কত বাকি।',
+  },
+  'landing.getStartedFree': { en: 'Get started free', bn: 'ফ্রি শুরু করুন' },
+  'landing.seeFeatures': { en: 'See features', bn: 'ফিচার দেখুন' },
+  'landing.openApp': { en: 'Open app', bn: 'অ্যাপ খুলুন' },
+  'landing.features.title': {
+    en: 'Everything you need to run your books',
+    bn: 'হিসাব রাখতে যা দরকার সব',
+  },
+  'landing.features.subtitle': {
+    en: 'Simple, focused tools that stay out of your way so you can focus on the work.',
+    bn: 'সহজ, ফোকাসড টুল — কাজে মন দিন, হিসাব ভুলবেন না।',
+  },
+  'landing.pricing.title': { en: 'Simple, scalable plans', bn: 'সহজ, স্কেলেবল প্ল্যান' },
+  'landing.pricing.subtitle': {
+    en: 'Start free and upgrade as your client list grows.',
+    bn: 'ফ্রি দিয়ে শুরু করুন, ক্লায়েন্ট বাড়লে আপগ্রেড করুন।',
+  },
+  'landing.mostPopular': { en: 'Most popular', bn: 'জনপ্রিয়' },
+  'landing.cta.title': { en: 'Ready to tidy up your finances?', bn: 'হিসাব গুছিয়ে ফেলতে প্রস্তুত?' },
+  'landing.cta.subtitle': { en: 'Sign in and start tracking in minutes.', bn: 'সাইন ইন করে কয়েক মিনিটেই শুরু করুন।' },
+  'landing.feature.clients': { en: 'Client management', bn: 'ক্লায়েন্ট ম্যানেজমেন্ট' },
+  'landing.feature.clients.desc': {
+    en: 'Keep every client, contact detail, and note organised in one searchable place.',
+    bn: 'প্রতিটি ক্লায়েন্ট, যোগাযোগ ও নোট এক জায়গায় গুছিয়ে রাখুন।',
+  },
+  'landing.feature.projects': { en: 'Project tracking', bn: 'প্রজেক্ট ট্র্যাকিং' },
+  'landing.feature.projects.desc': {
+    en: 'Track projects from kickoff to completion with amounts, advances, and status.',
+    bn: 'অ্যামাউন্ট, অ্যাডভান্স ও স্টেটাসসহ শুরু থেকে শেষ পর্যন্ত ট্র্যাক করুন।',
+  },
+  'landing.feature.payments': { en: 'Payments & balances', bn: 'পেমেন্ট ও ব্যালেন্স' },
+  'landing.feature.payments.desc': {
+    en: 'Record payments and instantly see what is paid, pending, or overdue.',
+    bn: 'পেমেন্ট লিখে রাখুন, কত পরিশোধ, কত বাকি সাথে সাথে দেখুন।',
+  },
+  'landing.feature.dashboard': { en: 'Revenue dashboard', bn: 'আয়ের ড্যাশবোর্ড' },
+  'landing.feature.dashboard.desc': {
+    en: 'See total and active revenue across projects at a glance, updated live.',
+    bn: 'মোট ও চলমান আয় এক নজরে, লাইভ আপডেট।',
+  },
+  'landing.feature.export': { en: 'Import & export', bn: 'ইমপোর্ট ও এক্সপোর্ট' },
+  'landing.feature.export.desc': {
+    en: 'Bring your data in and take it with you with CSV and JSON.',
+    bn: 'CSV ও JSON দিয়ে ডেটা আনুন ও নিয়ে যান।',
+  },
+  'landing.feature.themes': { en: 'Themes & language', bn: 'থিম ও ভাষা' },
+  'landing.feature.themes.desc': {
+    en: 'Six accent themes plus Bengali and English, switchable anytime.',
+    bn: '৬টি অ্যাকসেন্ট থিম এবং বাংলা ও ইংরেজি, যেকোনো সময় বদলান।',
+  },
+
+  // auth -------------------------------------------------------------------
+  'auth.title': { en: 'SKLedger', bn: 'SKLedger' },
+  'auth.subtitle': {
+    en: 'Sign in to track your freelance revenue',
+    bn: 'আয়ের হিসাব রাখতে সাইন ইন করুন',
+  },
+  'auth.google': { en: 'Continue with Google', bn: 'Google দিয়ে চালিয়ে যান' },
+
+  // dashboard --------------------------------------------------------------
+  'dashboard.title': { en: 'Dashboard', bn: 'ড্যাশবোর্ড' },
+  'dashboard.welcome': { en: 'Welcome back', bn: 'স্বাগতম' },
+  'dashboard.monthlyRevenue': { en: 'Received this month', bn: 'এই মাসে প্রাপ্ত' },
+  'dashboard.totalReceived': { en: 'Total received', bn: 'মোট প্রাপ্ত' },
+  'dashboard.pending': { en: 'Pending', bn: 'বাকি' },
+  'dashboard.activeProjects': { en: 'Active projects', bn: 'চলমান প্রজেক্ট' },
+  'dashboard.totalClients': { en: 'Total clients', bn: 'মোট ক্লায়েন্ট' },
+  'dashboard.activeProjectsTitle': { en: 'Active projects', bn: 'চলমান প্রজেক্ট' },
+  'dashboard.recentProjects': { en: 'Recent projects', bn: 'সাম্প্রতিক প্রজেক্ট' },
+  'dashboard.noActive': { en: 'No active projects yet.', bn: 'এখনো চলমান প্রজেক্ট নেই।' },
+  'dashboard.noRecent': { en: 'No recent projects yet.', bn: 'সাম্প্রতিক কোনো প্রজেক্ট নেই।' },
+  'dashboard.revenueChart': { en: 'Revenue (last 6 months)', bn: 'আয় (শেষ ৬ মাস)' },
+  'dashboard.analyticsLocked': {
+    en: 'Analytics is available on Pro and Business plans.',
+    bn: 'অ্যানালিটিক্স Pro ও Business প্ল্যানে পাওয়া যায়।',
+  },
+  'dashboard.upcomingDeadlines': { en: 'Upcoming deadlines', bn: 'আসন্ন ডেডলাইন' },
+
+  // clients ----------------------------------------------------------------
+  'clients.title': { en: 'Clients', bn: 'ক্লায়েন্ট' },
+  'clients.subtitle': { en: 'Manage your client information', bn: 'ক্লায়েন্টের তথ্য পরিচালনা করুন' },
+  'clients.add': { en: 'Add client', bn: 'ক্লায়েন্ট যোগ করুন' },
+  'clients.empty': {
+    en: 'No clients yet. Add your first client to get started.',
+    bn: 'এখনো কোনো ক্লায়েন্ট নেই। প্রথম ক্লায়েন্ট যোগ করে শুরু করুন।',
+  },
+  'clients.new': { en: 'New client', bn: 'নতুন ক্লায়েন্ট' },
+  'clients.edit': { en: 'Edit client', bn: 'ক্লায়েন্ট এডিট' },
+  'clients.deleteConfirm': {
+    en: 'Delete this client? Their projects will remain but be unlinked.',
+    bn: 'ক্লায়েন্ট মুছে ফেলবেন? তার প্রজেক্ট থাকবে তবে লিংকমুক্ত হবে।',
+  },
+  'clients.usage': { en: 'clients used', bn: 'ক্লায়েন্ট ব্যবহৃত' },
+  'clients.nameRequired': { en: 'Client name is required', bn: 'ক্লায়েন্টের নাম দিতে হবে' },
+  'clients.limitTitle': { en: 'Client limit reached', bn: 'ক্লায়েন্ট সীমা শেষ' },
+  'clients.limitBody': {
+    en: 'Your plan allows up to {limit} clients. Upgrade to add more.',
+    bn: 'আপনার প্ল্যানে সর্বোচ্চ {limit} ক্লায়েন্ট। আপগ্রেড করে আরও যোগ করুন।',
+  },
+
+  // projects ---------------------------------------------------------------
+  'projects.title': { en: 'Projects', bn: 'প্রজেক্ট' },
+  'projects.subtitle': {
+    en: 'Track your projects, work description, amounts, and payments',
+    bn: 'প্রজেক্ট, কাজের বিবরণ, অ্যামাউন্ট ও পেমেন্ট ট্র্যাক করুন',
+  },
+  'projects.add': { en: 'Add project', bn: 'প্রজেক্ট যোগ করুন' },
+  'projects.empty': {
+    en: 'No projects yet. Add your first project to get started.',
+    bn: 'এখনো কোনো প্রজেক্ট নেই। প্রথম প্রজেক্ট যোগ করে শুরু করুন।',
+  },
+  'projects.new': { en: 'New project', bn: 'নতুন প্রজেক্ট' },
+  'projects.edit': { en: 'Edit project', bn: 'প্রজেক্ট এডিট' },
+  'projects.deleteConfirm': {
+    en: 'Delete this project? Its payments will also be removed.',
+    bn: 'প্রজেক্ট মুছে ফেলবেন? এর পেমেন্টও মুছে যাবে।',
+  },
+  'projects.selectClient': { en: 'Client', bn: 'ক্লায়েন্ট' },
+  'projects.noClient': { en: 'No client', bn: 'ক্লায়েন্ট নেই' },
+  'projects.titleLabel': { en: 'Project title', bn: 'প্রজেক্টের নাম' },
+  'projects.titleRequired': { en: 'Project title is required', bn: 'প্রজেক্টের নাম দিতে হবে' },
+  'projects.amount': { en: 'Amount', bn: 'অ্যামাউন্ট' },
+  'projects.advance': { en: 'Advance', bn: 'অ্যাডভান্স' },
+  'projects.balance': { en: 'Balance', bn: 'ব্যালেন্স' },
+  'projects.services': { en: 'Services checklist', bn: 'সার্ভিস চেকলিস্ট' },
+  'projects.addService': { en: 'Add service', bn: 'সার্ভিস যোগ করুন' },
+  'projects.servicePlaceholder': { en: 'Service name', bn: 'সার্ভিসের নাম' },
+  'projects.applyPreset': { en: 'Preset', bn: 'প্রিসেট' },
+  'projects.presetLocked': { en: 'Checklist presets are a Pro feature.', bn: 'চেকলিস্ট প্রিসেট Pro ফিচার।' },
+  'projects.noService': { en: 'No services yet.', bn: 'কোনো সার্ভিস নেই।' },
+  'projects.markComplete': { en: 'Mark completed', bn: 'সম্পন্ন করুন' },
+  'projects.viewInvoice': { en: 'Invoice', bn: 'ইনভয়েস' },
+  'projects.limitTitle': { en: 'Project limit reached', bn: 'প্রজেক্ট সীমা শেষ' },
+  'projects.limitBody': {
+    en: 'Your plan allows up to {limit} projects. Upgrade to add more.',
+    bn: 'আপনার প্ল্যানে সর্বোচ্চ {limit} প্রজেক্ট। আপগ্রেড করে আরও যোগ করুন।',
+  },
+  'projects.usage': { en: 'projects used', bn: 'প্রজেক্ট ব্যবহৃত' },
+
+  // statuses ---------------------------------------------------------------
+  'status.active': { en: 'Active', bn: 'সক্রিয়' },
+  'status.in_progress': { en: 'In progress', bn: 'চলমান' },
+  'status.completed': { en: 'Completed', bn: 'সম্পন্ন' },
+  'status.cancelled': { en: 'Cancelled', bn: 'বাতিল' },
+  'status.on_hold': { en: 'On hold', bn: 'স্থগিত' },
+  'status.pending': { en: 'Pending', bn: 'অপেক্ষমাণ' },
+  'status.approved': { en: 'Approved', bn: 'অনুমোদিত' },
+  'status.rejected': { en: 'Rejected', bn: 'প্রত্যাখ্যাত' },
+
+  // payments ---------------------------------------------------------------
+  'payments.title': { en: 'Payments', bn: 'পেমেন্ট' },
+  'payments.add': { en: 'Add payment', bn: 'পেমেন্ট যোগ করুন' },
+  'payments.method': { en: 'Method', bn: 'মাধ্যম' },
+  'payments.amount': { en: 'Amount', bn: 'টাকা' },
+  'payments.date': { en: 'Payment date', bn: 'পেমেন্টের তারিখ' },
+  'payments.received': { en: 'Received', bn: 'প্রাপ্ত' },
+  'payments.balance': { en: 'Balance', bn: 'বাকি' },
+  'payments.deleteConfirm': { en: 'Delete this payment?', bn: 'পেমেন্ট মুছে ফেলবেন?' },
+  'payments.none': { en: 'No payments recorded yet.', bn: 'এখনো কোনো পেমেন্ট নেই।' },
+
+  // invoice ----------------------------------------------------------------
+  'invoice.title': { en: 'Invoice', bn: 'ইনভয়েস' },
+  'invoice.from': { en: 'From', bn: 'প্রেরক' },
+  'invoice.to': { en: 'Bill to', bn: 'প্রাপক' },
+  'invoice.number': { en: 'Invoice no.', bn: 'ইনভয়েস নম্বর' },
+  'invoice.date': { en: 'Date', bn: 'তারিখ' },
+  'invoice.dueDate': { en: 'Due date', bn: 'ডেডলাইন' },
+  'invoice.print': { en: 'Print / Save PDF', bn: 'প্রিন্ট / PDF' },
+  'invoice.subtotal': { en: 'Subtotal', bn: 'সাবটোটাল' },
+  'invoice.advance': { en: 'Advance', bn: 'অ্যাডভান্স' },
+  'invoice.paid': { en: 'Paid', bn: 'পরিশোধিত' },
+  'invoice.due': { en: 'Due', bn: 'বাকি' },
+  'invoice.thankYou': { en: 'Thank you for your business.', bn: 'ধন্যবাদ।' },
+
+  // settings ---------------------------------------------------------------
+  'settings.title': { en: 'Settings', bn: 'সেটিংস' },
+  'settings.subtitle': { en: 'Manage your app preferences', bn: 'অ্যাপের সেটিংস পরিচালনা করুন' },
+  'settings.appearance': { en: 'Appearance', bn: 'অ্যাপিয়ারেন্স' },
+  'settings.mode': { en: 'Mode', bn: 'মোড' },
+  'settings.light': { en: 'Light', bn: 'লাইট' },
+  'settings.dark': { en: 'Dark', bn: 'ডার্ক' },
+  'settings.system': { en: 'System', bn: 'সিস্টেম' },
+  'settings.accent': { en: 'Accent color', bn: 'প্রধান রং' },
+  'settings.language': { en: 'Language', bn: 'ভাষা' },
+  'settings.brandName': { en: 'Brand name', bn: 'ব্র্যান্ডের নাম' },
+  'settings.currency': { en: 'Currency', bn: 'মুদ্রা' },
+  'settings.data': { en: 'Data management', bn: 'ডেটা ম্যানেজমেন্ট' },
+  'settings.exportCsv': { en: 'Export clients & projects (CSV)', bn: 'ক্লায়েন্ট ও প্রজেক্ট এক্সপোর্ট (CSV)' },
+  'settings.exportJson': { en: 'Export all data (JSON)', bn: 'সব ডেটা এক্সপোর্ট (JSON)' },
+  'settings.importJson': { en: 'Import backup (JSON)', bn: 'ব্যাকআপ ইমপোর্ট (JSON)' },
+  'settings.exportLimit': {
+    en: '{remaining} of {limit} exports left this plan',
+    bn: 'এই প্ল্যানে {limit}টির মধ্যে {remaining}টি এক্সপোর্ট বাকি',
+  },
+  'settings.importLimit': {
+    en: '{remaining} of {limit} imports left this plan',
+    bn: 'এই প্ল্যানে {limit}টির মধ্যে {remaining}টি ইমপোর্ট বাকি',
+  },
+  'settings.exportBlocked': { en: 'Exporting is a Pro feature. Upgrade to enable it.', bn: 'এক্সপোর্ট Pro ফিচার। আপগ্রেড করুন।' },
+  'settings.importBlocked': { en: 'Importing is a Pro feature. Upgrade to enable it.', bn: 'ইমপোর্ট Pro ফিচার। আপগ্রেড করুন।' },
+  'settings.subscription': { en: 'Subscription', bn: 'সাবস্ক্রিপশন' },
+  'settings.currentPlan': { en: 'Current plan', bn: 'বর্তমান প্ল্যান' },
+  'settings.planUsage': { en: 'Plan usage', bn: 'প্ল্যান ব্যবহার' },
+  'settings.managePlan': { en: 'Manage plan', bn: 'প্ল্যান পরিচালনা' },
+  'settings.prefs': { en: 'Preferences', bn: 'পছন্দসই' },
+
+  // notifications ----------------------------------------------------------
+  'notify.title': { en: 'Deadline reminders', bn: 'ডেডলাইন রিমাইন্ডার' },
+  'notify.subtitle': { en: 'Get a browser notification before a project deadline.', bn: 'ডেডলাইনের আগে ব্রাউজার নোটিফিকেশন পান।' },
+  'notify.enable': { en: 'Enable reminders', bn: 'রিমাইন্ডার চালু করুন' },
+  'notify.enabled': { en: 'Reminders enabled', bn: 'রিমাইন্ডার চালু' },
+  'notify.hoursBefore': { en: 'Notify this many hours before the deadline', bn: 'ডেডলাইনের কত ঘণ্টা আগে জানাবে' },
+  'notify.hoursHint': { en: 'Comma-separated, e.g. 3, 2, 1', bn: 'কমা দিয়ে লিখুন, যেমন ৩, ২, ১' },
+  'notify.permissionDenied': {
+    en: 'Notifications are blocked. Allow them in your browser settings.',
+    bn: 'নোটিফিকেশন বন্ধ। ব্রাউজার সেটিংসে অনুমতি দিন।',
+  },
+  'notify.locked': { en: 'Deadline reminders are a Pro feature.', bn: 'ডেডলাইন রিমাইন্ডার Pro ফিচার।' },
+  'notify.test': { en: 'Send test notification', bn: 'টেস্ট নোটিফিকেশন' },
+  'notify.upcoming': { en: 'Upcoming deadlines', bn: 'আসন্ন ডেডলাইন' },
+  'notify.none': { en: 'Nothing due soon.', bn: 'শীঘ্রই কিছু নেই।' },
+
+  // admin ------------------------------------------------------------------
+  'admin.title': { en: 'Admin panel', bn: 'অ্যাডমিন প্যানেল' },
+  'admin.subtitle': { en: 'Every signup, plan and payment across SKLedger.', bn: 'SKLedger-এর সব সাইনআপ, প্ল্যান ও পেমেন্ট।' },
+  'admin.totalUsers': { en: 'Users', bn: 'ইউজার' },
+  'admin.paidUsers': { en: 'Paid users', bn: 'পেইড ইউজার' },
+  'admin.revenue': { en: 'Total revenue', bn: 'মোট আয়' },
+  'admin.pendingRequests': { en: 'Pending requests', bn: 'অপেক্ষমাণ অনুরোধ' },
+  'admin.usersTitle': { en: 'Users', bn: 'ইউজার' },
+  'admin.user': { en: 'User', bn: 'ইউজার' },
+  'admin.plan': { en: 'Plan', bn: 'প্ল্যান' },
+  'admin.role': { en: 'Role', bn: 'রোল' },
+  'admin.joined': { en: 'Joined', bn: 'যোগদান' },
+  'admin.usage': { en: 'Usage (clients / projects)', bn: 'ব্যবহার (ক্লায়েন্ট / প্রজেক্ট)' },
+  'admin.setPlan': { en: 'Set plan', bn: 'প্ল্যান নির্ধারণ' },
+  'admin.requests': { en: 'Upgrade requests', bn: 'আপগ্রেড অনুরোধ' },
+  'admin.noRequests': { en: 'No upgrade requests.', bn: 'কোনো অনুরোধ নেই।' },
+  'admin.noUsers': { en: 'No users yet.', bn: 'এখনো কোনো ইউজার নেই।' },
+  'admin.method': { en: 'Method', bn: 'মাধ্যম' },
+  'admin.txnId': { en: 'Transaction ID', bn: 'ট্রানজেকশন আইডি' },
+  'admin.proof': { en: 'Proof', bn: 'প্রমাণ' },
+  'admin.viewProof': { en: 'View proof', bn: 'প্রমাণ দেখুন' },
+  'admin.approve': { en: 'Approve', bn: 'অনুমোদন' },
+  'admin.reject': { en: 'Reject', bn: 'প্রত্যাখ্যান' },
+  'admin.requestedPlan': { en: 'Requested plan', bn: 'অনুরোধকৃত প্ল্যান' },
+  'admin.adminBadge': { en: 'Admin', bn: 'অ্যাডমিন' },
+  'admin.recentPayments': { en: 'Recent approved payments', bn: 'সাম্প্রতিক অনুমোদিত পেমেন্ট' },
+
+  // upgrade ----------------------------------------------------------------
+  'upgrade.title': { en: 'Upgrade your plan', bn: 'প্ল্যান আপগ্রেড করুন' },
+  'upgrade.subtitle': {
+    en: 'Pay, upload the proof, then an admin verifies and activates it.',
+    bn: 'পেমেন্ট করে প্রমাণ আপলোড করুন, অ্যাডমিন যাচাই করে চালু করবেন।',
+  },
+  'upgrade.choosePlan': { en: 'Choose a plan', bn: 'একটি প্ল্যান বাছুন' },
+  'upgrade.currentPlan': { en: 'Current plan', bn: 'বর্তমান প্ল্যান' },
+  'upgrade.renew': { en: 'Renew / extend', bn: 'নবায়ন' },
+  'upgrade.method': { en: 'Payment method', bn: 'পেমেন্ট মাধ্যম' },
+  'upgrade.txnId': { en: 'Transaction ID', bn: 'ট্রানজেকশন আইডি' },
+  'upgrade.proof': { en: 'Payment screenshot', bn: 'পেমেন্টের স্ক্রিনশট' },
+  'upgrade.submit': { en: 'Submit payment', bn: 'পেমেন্ট জমা দিন' },
+  'upgrade.submitted': { en: 'Payment submitted. Awaiting admin approval.', bn: 'পেমেন্ট জমা হয়েছে। অ্যাডমিন অনুমোদনের অপেক্ষায়।' },
+  'upgrade.pendingNotice': { en: 'You have a payment awaiting approval.', bn: 'আপনার একটি পেমেন্ট অনুমোদনের অপেক্ষায়।' },
+  'upgrade.lockedFeature': { en: '{feature} is available on Pro and Business.', bn: '{feature} Pro ও Business প্ল্যানে পাওয়া যায়।' },
+  'upgrade.myPayments': { en: 'My payments', bn: 'আমার পেমেন্ট' },
+
+  // plan -------------------------------------------------------------------
+  'plan.free': { en: 'Free', bn: 'ফ্রি' },
+  'plan.pro': { en: 'Pro', bn: 'প্রো' },
+  'plan.business': { en: 'Business', bn: 'বিজনেস' },
+  'plan.perMonth': { en: '/mo', bn: '/মাস' },
+  'plan.upTo': { en: 'Up to', bn: 'সর্বোচ্চ' },
+  'plan.clients': { en: 'clients', bn: 'ক্লায়েন্ট' },
+  'plan.projects': { en: 'projects', bn: 'প্রজেক্ট' },
+  'plan.exports': { en: 'exports / month', bn: 'এক্সপোর্ট / মাস' },
+  'plan.imports': { en: 'imports / month', bn: 'ইমপোর্ট / মাস' },
+  'plan.feature.invoices': { en: 'Invoices', bn: 'ইনভয়েস' },
+  'plan.feature.analytics': { en: 'Analytics', bn: 'অ্যানালিটিক্স' },
+  'plan.feature.notifications': { en: 'Deadline reminders', bn: 'ডেডলাইন রিমাইন্ডার' },
+  'plan.feature.presets': { en: 'Checklist presets', bn: 'চেকলিস্ট প্রিসেট' },
+
+  // toasts -----------------------------------------------------------------
+  'toast.clientAdded': { en: 'Client added', bn: 'ক্লায়েন্ট যোগ হয়েছে' },
+  'toast.clientUpdated': { en: 'Client updated', bn: 'ক্লায়েন্ট আপডেট হয়েছে' },
+  'toast.clientDeleted': { en: 'Client deleted', bn: 'ক্লায়েন্ট মুছে ফেলা হয়েছে' },
+  'toast.projectAdded': { en: 'Project added', bn: 'প্রজেক্ট যোগ হয়েছে' },
+  'toast.projectUpdated': { en: 'Project updated', bn: 'প্রজেক্ট আপডেট হয়েছে' },
+  'toast.projectDeleted': { en: 'Project deleted', bn: 'প্রজেক্ট মুছে ফেলা হয়েছে' },
+  'toast.paymentAdded': { en: 'Payment recorded', bn: 'পেমেন্ট যোগ হয়েছে' },
+  'toast.paymentDeleted': { en: 'Payment deleted', bn: 'পেমেন্ট মুছে ফেলা হয়েছে' },
+  'toast.settingsSaved': { en: 'Settings saved', bn: 'সেটিংস সংরক্ষিত' },
+  'toast.exported': { en: 'Export downloaded', bn: 'এক্সপোর্ট ডাউনলোড হয়েছে' },
+  'toast.imported': { en: 'Backup imported', bn: 'ব্যাকআপ ইমপোর্ট হয়েছে' },
+  'toast.upgradeRequested': { en: 'Payment submitted', bn: 'পেমেন্ট জমা হয়েছে' },
+  'toast.planUpdated': { en: 'Plan updated', bn: 'প্ল্যান আপডেট হয়েছে' },
+} as const
+
+export type TranslationKey = keyof typeof messages
+
+export function translate(
+  key: TranslationKey,
+  lang: LanguageId,
+  vars?: Record<string, string | number>
+): string {
+  const entry = messages[key] as { en: string; bn?: string }
+  let text = (lang === 'bn' ? entry.bn : entry.en) || entry.en
+  if (vars) {
+    for (const [k, v] of Object.entries(vars)) {
+      text = text.split(`{${k}}`).join(String(v))
+    }
+  }
+  return text
+}

@@ -5,51 +5,39 @@ import Dashboard from './pages/Dashboard'
 import Clients from './pages/Clients'
 import Projects from './pages/Projects'
 import Settings from './pages/Settings'
+import Upgrade from './pages/Upgrade'
+import Admin from './pages/Admin'
 import Auth from './pages/Auth'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
+
+function Authed({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute>
+      <Layout>{children}</Layout>
+    </ProtectedRoute>
+  )
+}
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/dashboard" element={<Authed><Dashboard /></Authed>} />
+      <Route path="/clients" element={<Authed><Clients /></Authed>} />
+      <Route path="/projects" element={<Authed><Projects /></Authed>} />
+      <Route path="/settings" element={<Authed><Settings /></Authed>} />
+      <Route path="/upgrade" element={<Authed><Upgrade /></Authed>} />
       <Route
-        path="/dashboard"
+        path="/admin"
         element={
           <ProtectedRoute>
-            <Layout>
-              <Dashboard />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/clients"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Clients />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/projects"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Projects />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Settings />
-            </Layout>
+            <AdminRoute>
+              <Layout>
+                <Admin />
+              </Layout>
+            </AdminRoute>
           </ProtectedRoute>
         }
       />
