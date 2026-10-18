@@ -93,16 +93,16 @@ export default function NotificationBell() {
 
   const badge = unreadAnnouncements + (canNotify ? deadlines.length : 0)
 
+  const hasContent = announcements.length > 0 || (canNotify && deadlines.length > 0)
+
   const openPanel = () => {
-    setOpen((prev) => {
-      const next = !prev
-      if (next) {
-        const now = new Date().toISOString()
-        writeStore(READ_KEY, now)
-        setLastRead(now)
-      }
-      return next
-    })
+    const next = !open
+    if (next) {
+      const now = new Date().toISOString()
+      writeStore(READ_KEY, now)
+      setLastRead(now)
+    }
+    setOpen(next)
   }
 
   return (
@@ -131,7 +131,7 @@ export default function NotificationBell() {
           <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border bg-card shadow-lg">
             <p className="border-b px-4 py-3 text-sm font-semibold">{t('notif.title')}</p>
             <div className="max-h-96 overflow-y-auto">
-              {badge === 0 ? (
+              {!hasContent ? (
                 <p className="px-4 py-6 text-center text-sm text-muted-foreground">
                   {t('notif.empty')}
                 </p>
