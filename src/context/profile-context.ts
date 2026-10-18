@@ -21,6 +21,7 @@ export interface ProfileContextValue {
   isAdmin: boolean
   plan: PlanId
   planDef: PlanDef
+  planExpiresAt: string | null
   currency: string
   brandName: string
   logoUrl: string | null

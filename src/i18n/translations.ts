@@ -334,6 +334,11 @@ export const messages = {
   'admin.requestedPlan': { en: 'Requested plan', bn: 'অনুরোধকৃত প্ল্যান' },
   'admin.adminBadge': { en: 'Admin', bn: 'অ্যাডমিন' },
   'admin.recentPayments': { en: 'Recent approved payments', bn: 'সাম্প্রতিক অনুমোদিত পেমেন্ট' },
+  'admin.apply': { en: 'Apply', bn: 'প্রয়োগ করুন' },
+  'admin.expires': { en: 'Expires', bn: 'মেয়াদ শেষ' },
+  'admin.noExpiry': { en: 'No expiry', bn: 'মেয়াদ নেই' },
+  'admin.dDays': { en: '{n} days', bn: '{n} দিন' },
+  'admin.dLifetime': { en: 'Lifetime', bn: 'আজীবন' },
   'admin.paymentDetails': { en: 'Payment details', bn: 'পেমেন্টের বিবরণ' },
   'admin.paymentDetailsHint': {
     en: 'These details are shown to users when they choose a plan to upgrade.',
@@ -366,6 +371,10 @@ export const messages = {
   'upgrade.lockedFeature': { en: '{feature} is available on Pro and Business.', bn: '{feature} Pro ও Business প্ল্যানে পাওয়া যায়।' },
   'upgrade.myPayments': { en: 'My payments', bn: 'আমার পেমেন্ট' },
   'upgrade.payTo': { en: 'Send payment to', bn: 'পেমেন্ট পাঠান' },
+  'upgrade.expiresOn': {
+    en: 'Your plan is active until {date}. Renew before then to keep it.',
+    bn: 'আপনার প্ল্যান {date} পর্যন্ত সক্রিয়। চালু রাখতে তার আগে নবায়ন করুন।',
+  },
 
   // plan -------------------------------------------------------------------
   'plan.free': { en: 'Free', bn: 'ফ্রি' },

@@ -77,6 +77,7 @@ export interface UserProfile {
   avatar_url?: string | null
   role: 'user' | 'admin'
   plan: PlanId
+  plan_expires_at?: string | null
   exports_used: number
   imports_used: number
   created_at: string

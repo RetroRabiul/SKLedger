@@ -7,6 +7,9 @@ export async function getProfile(): Promise<UserProfile | null> {
   } = await supabase.auth.getUser()
   if (!user) return null
 
+  // Auto-revert an expired plan back to free before reading it.
+  await supabase.rpc('expire_my_plan')
+
   const { data, error } = await supabase
     .from('profiles')
     .select('*')

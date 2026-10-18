@@ -30,11 +30,15 @@ create table if not exists public.profiles (
   avatar_url    text,
   role          text not null default 'user' check (role in ('user', 'admin')),
   plan          text not null default 'free' check (plan in ('free', 'pro', 'business')),
+  plan_expires_at timestamptz,
   exports_used  integer not null default 0,
   imports_used  integer not null default 0,
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );
+
+-- Backfill for projects created before plan expiry existed.
+alter table public.profiles add column if not exists plan_expires_at timestamptz;
 
 -- Owner account is always admin.
 create or replace function public.handle_new_user()
@@ -97,6 +101,7 @@ begin
   if not public.is_admin() then
     new.role := old.role;
     new.plan := old.plan;
+    new.plan_expires_at := old.plan_expires_at;
   end if;
   new.updated_at := now();
   return new;
@@ -299,7 +304,7 @@ create policy appsettings_admin_all on public.app_settings
 -- ---------------------------------------------------------------------------
 -- Admin RPCs (SECURITY DEFINER so only admins can escalate a plan)
 -- ---------------------------------------------------------------------------
-create or replace function public.admin_set_plan(p_user uuid, p_plan text)
+create or replace function public.admin_set_plan(p_user uuid, p_plan text, p_days integer default null)
 returns void
 language plpgsql
 security definer
@@ -312,7 +317,52 @@ begin
   if p_plan not in ('free', 'pro', 'business') then
     raise exception 'invalid plan';
   end if;
-  update public.profiles set plan = p_plan, updated_at = now() where id = p_user;
+
+  update public.profiles
+    set plan = p_plan,
+        plan_expires_at = case
+          when p_plan = 'free' then null
+          when p_days is null or p_days <= 0 then null
+          else now() + (p_days || ' days')::interval
+        end,
+        updated_at = now()
+    where id = p_user;
+end;
+$$;
+
+-- Revert a single (own) expired plan back to free. Safe for any signed-in user.
+create or replace function public.expire_my_plan()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.profiles
+    set plan = 'free', plan_expires_at = null, updated_at = now()
+    where id = auth.uid()
+      and plan <> 'free'
+      and plan_expires_at is not null
+      and plan_expires_at < now();
+end;
+$$;
+
+-- Revert every expired plan back to free (admin only).
+create or replace function public.expire_plans()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'not authorized';
+  end if;
+  update public.profiles
+    set plan = 'free', plan_expires_at = null, updated_at = now()
+    where plan <> 'free'
+      and plan_expires_at is not null
+      and plan_expires_at < now();
 end;
 $$;
 
@@ -342,7 +392,11 @@ begin
     where id = p_subscription_id;
 
   if p_status = 'approved' then
-    update public.profiles set plan = s.plan, updated_at = now() where id = s.user_id;
+    update public.profiles
+      set plan = s.plan,
+          plan_expires_at = now() + interval '30 days',
+          updated_at = now()
+      where id = s.user_id;
   end if;
 end;
 $$;

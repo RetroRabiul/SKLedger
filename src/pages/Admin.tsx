@@ -16,6 +16,8 @@ import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
 import { formatCurrency, formatDate } from '../utils/format'
 
+const DURATIONS = [30, 90, 180, 365, 0]
+
 export default function Admin() {
   const { t, lang } = useI18n()
   const { currency, refresh } = useProfile()
@@ -25,6 +27,7 @@ export default function Admin() {
   const [methods, setMethods] = useState<PaymentChannel[]>([])
   const [note, setNote] = useState('')
   const [savingPayment, setSavingPayment] = useState(false)
+  const [drafts, setDrafts] = useState<Record<string, { plan: PlanId; days: number }>>({})
 
   const load = () => {
     setLoading(true)
@@ -52,10 +55,15 @@ export default function Admin() {
     return { revenue, pending, paidUsers }
   }, [subs])
 
-  const handlePlanChange = async (userId: string, plan: PlanId) => {
+  const handlePlanChange = async (userId: string, plan: PlanId, days: number) => {
     try {
-      await adminSetPlan(userId, plan)
+      await adminSetPlan(userId, plan, days)
       toast.success(t('toast.planUpdated'))
+      setDrafts((prev) => {
+        const next = { ...prev }
+        delete next[userId]
+        return next
+      })
       load()
     } catch (error) {
       toast.error((error as Error).message ?? t('common.error'))
@@ -265,7 +273,9 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {users.map((u) => {
+                const draft = drafts[u.id] ?? { plan: u.plan, days: 30 }
+                return (
                 <tr key={u.id} className="border-t">
                   <td className="px-4 py-2">
                     <p className="font-medium">{u.full_name ?? u.email}</p>
@@ -281,24 +291,64 @@ export default function Admin() {
                     )}
                   </td>
                   <td className="px-4 py-2">
-                    <select
-                      value={u.plan}
-                      onChange={(e) => handlePlanChange(u.id, e.target.value as PlanId)}
-                      className="rounded-md border bg-background px-2 py-1 text-xs"
-                    >
-                      {PLAN_ORDER.map((p) => (
-                        <option key={p} value={p}>
-                          {t(`plan.${p}`)}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <select
+                        value={draft.plan}
+                        onChange={(e) =>
+                          setDrafts((prev) => ({
+                            ...prev,
+                            [u.id]: { ...draft, plan: e.target.value as PlanId },
+                          }))
+                        }
+                        className="rounded-md border bg-background px-2 py-1 text-xs"
+                      >
+                        {PLAN_ORDER.map((p) => (
+                          <option key={p} value={p}>
+                            {t(`plan.${p}`)}
+                          </option>
+                        ))}
+                      </select>
+                      {draft.plan !== 'free' && (
+                        <select
+                          value={draft.days}
+                          onChange={(e) =>
+                            setDrafts((prev) => ({
+                              ...prev,
+                              [u.id]: { ...draft, days: Number(e.target.value) },
+                            }))
+                          }
+                          className="rounded-md border bg-background px-2 py-1 text-xs"
+                        >
+                          {DURATIONS.map((d) => (
+                            <option key={d} value={d}>
+                              {d === 0 ? t('admin.dLifetime') : t('admin.dDays', { n: d })}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <button
+                        onClick={() => void handlePlanChange(u.id, draft.plan, draft.days)}
+                        className="rounded-md border px-2 py-1 text-xs hover:bg-accent"
+                      >
+                        {t('admin.apply')}
+                      </button>
+                    </div>
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      {t('admin.expires')}:{' '}
+                      {u.plan === 'free'
+                        ? '—'
+                        : u.plan_expires_at
+                          ? formatDate(u.plan_expires_at, lang)
+                          : t('admin.noExpiry')}
+                    </p>
                   </td>
                   <td className="px-4 py-2">{formatCurrency(u.revenue, currency, lang)}</td>
                   <td className="px-4 py-2 text-xs text-muted-foreground">
                     {formatDate(u.created_at, lang)}
                   </td>
                 </tr>
-              ))}
+                )
+              })}
               {!loading && users.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-4 py-6 text-center text-sm text-muted-foreground">

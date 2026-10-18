@@ -53,7 +53,9 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     void refresh()
   }, [refresh])
 
-  const plan: PlanId = profile?.plan ?? 'free'
+  const expiredAt =
+    profile?.plan_expires_at && new Date(profile.plan_expires_at).getTime() < Date.now()
+  const plan: PlanId = !profile || expiredAt ? 'free' : profile.plan
   const planDef = PLANS[plan]
 
   const can = useCallback((feature: PlanFeature) => planDef.features[feature], [planDef])
@@ -120,6 +122,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       isAdmin: profile?.role === 'admin',
       plan,
       planDef,
+      planExpiresAt: plan === 'free' ? null : (profile?.plan_expires_at ?? null),
       currency: settings?.currency ?? 'BDT',
       brandName: settings?.brand_name ?? 'SKLedger',
       logoUrl: settings?.logo_url ?? null,

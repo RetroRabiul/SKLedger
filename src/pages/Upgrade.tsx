@@ -14,7 +14,7 @@ const METHODS = ['bKash', 'Nagad', 'Rocket', 'Bank Transfer']
 
 export default function Upgrade() {
   const { t, lang } = useI18n()
-  const { plan, profile } = useProfile()
+  const { plan, profile, planExpiresAt } = useProfile()
 
   const [subs, setSubs] = useState<Subscription[]>([])
   const [target, setTarget] = useState<PlanId | null>(null)
@@ -82,6 +82,11 @@ export default function Upgrade() {
       <div>
         <h1 className="text-2xl font-bold">{t('upgrade.title')}</h1>
         <p className="text-muted-foreground">{t('upgrade.subtitle')}</p>
+        {planExpiresAt && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t('upgrade.expiresOn', { date: formatDate(planExpiresAt, lang) })}
+          </p>
+        )}
       </div>
 
       {pending && (

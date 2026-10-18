@@ -2,6 +2,7 @@ import { supabase } from '../lib/supabase'
 import type { AdminUserRow, PlanId, Subscription } from '../types'
 
 export async function listUsers(): Promise<AdminUserRow[]> {
+  await supabase.rpc('expire_plans')
   const [profilesRes, subsRes] = await Promise.all([
     supabase.from('profiles').select('*').order('created_at', { ascending: false }),
     supabase.from('subscriptions').select('user_id, amount, status'),
@@ -44,8 +45,12 @@ export async function listSubscriptions(): Promise<AdminSubscriptionRow[]> {
   })) as AdminSubscriptionRow[]
 }
 
-export async function adminSetPlan(userId: string, plan: PlanId): Promise<void> {
-  const { error } = await supabase.rpc('admin_set_plan', { p_user: userId, p_plan: plan })
+export async function adminSetPlan(userId: string, plan: PlanId, days?: number): Promise<void> {
+  const { error } = await supabase.rpc('admin_set_plan', {
+    p_user: userId,
+    p_plan: plan,
+    p_days: days ?? null,
+  })
   if (error) throw error
 }
 
