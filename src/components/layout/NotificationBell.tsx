@@ -128,23 +128,27 @@ export default function NotificationBell() {
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-40 cursor-default"
           />
-          <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border bg-card shadow-lg">
-            <p className="border-b px-4 py-3 text-sm font-semibold">{t('notif.title')}</p>
+          <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border bg-card shadow-xl">
+            <div className="flex items-center gap-2 border-b px-4 py-3">
+              <Bell className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">{t('notif.title')}</p>
+            </div>
             <div className="max-h-96 overflow-y-auto">
               {!hasContent ? (
-                <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-                  {t('notif.empty')}
-                </p>
+                <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
+                  <Bell className="h-6 w-6 text-muted-foreground/60" />
+                  <p className="text-sm text-muted-foreground">{t('notif.empty')}</p>
+                </div>
               ) : (
                 <>
                   {announcements.length > 0 && (
                     <div className="border-b">
-                      <p className="px-4 pt-3 text-xs font-medium text-muted-foreground">
+                      <p className="px-4 pt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         {t('notif.announcements')}
                       </p>
                       <ul className="divide-y">
                         {announcements.map((a) => (
-                          <li key={a.id} className="px-4 py-3">
+                          <li key={a.id} className="px-4 py-3 transition-colors hover:bg-accent/40">
                             <p className="text-sm font-medium">{a.title}</p>
                             {a.body && (
                               <p className="mt-0.5 whitespace-pre-line text-xs text-muted-foreground">
@@ -162,14 +166,17 @@ export default function NotificationBell() {
 
                   {canNotify && deadlines.length > 0 && (
                     <div>
-                      <p className="px-4 pt-3 text-xs font-medium text-muted-foreground">
+                      <p className="px-4 pt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         {t('notif.deadlines')}
                       </p>
                       <ul className="divide-y">
                         {deadlines.map(({ project, hoursLeft }) => {
                           const due = parseDueDate(project.due_date)
                           return (
-                            <li key={project.id} className="flex items-start gap-2 px-4 py-3">
+                            <li
+                              key={project.id}
+                              className="flex items-start gap-2 px-4 py-3 transition-colors hover:bg-accent/40"
+                            >
                               <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
                               <div>
                                 <p className="text-sm font-medium">{project.title}</p>
