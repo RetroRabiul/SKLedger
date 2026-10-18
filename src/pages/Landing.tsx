@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
   Briefcase,
@@ -12,10 +13,17 @@ import {
   Wallet,
 } from 'lucide-react'
 import { useI18n } from '../hooks/useI18n'
+import { useAuth } from '../hooks/useAuth'
 import { PLAN_ORDER, PLANS } from '../config/plans'
 
 export default function Landing() {
   const { t } = useI18n()
+  const { user, loading } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user && !loading) navigate('/dashboard', { replace: true })
+  }, [user, loading, navigate])
 
   const features = [
     { icon: Users, title: t('landing.feature.clients'), description: t('landing.feature.clients.desc') },
