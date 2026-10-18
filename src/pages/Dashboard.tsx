@@ -160,7 +160,7 @@ export default function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-lg border bg-card p-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h3 className="text-lg font-semibold">{t('dashboard.revenueChart')}</h3>
             {can('analytics') && (
               <div className="flex items-center gap-2">

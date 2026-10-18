@@ -126,17 +126,17 @@ export default function Projects() {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
           <p className="text-xs text-muted-foreground">
             {limit.current} {t('common.of')} {limit.limit} {t('projects.usage')}
           </p>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('common.search')}
-              className="w-48 rounded-md border bg-background py-2 pl-9 pr-3 text-sm"
+              className="w-full rounded-md border bg-background py-2 pl-9 pr-3 text-sm sm:w-48"
             />
           </div>
         </div>
