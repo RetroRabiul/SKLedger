@@ -16,7 +16,8 @@ import { useI18n } from '../hooks/useI18n'
 import { useAuth } from '../hooks/useAuth'
 import { PLAN_ORDER, PLANS } from '../config/plans'
 import { defaultPlanPrices, getPlanPriceInfo } from '../services/planPrices'
-import type { PlanPrices } from '../types'
+import { DEFAULT_BRANDING, getBranding } from '../services/branding'
+import type { AppBranding, PlanPrices } from '../types'
 
 export default function Landing() {
   const { t } = useI18n()
@@ -24,6 +25,7 @@ export default function Landing() {
   const navigate = useNavigate()
   const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
   const [prevPrices, setPrevPrices] = useState<PlanPrices>(defaultPlanPrices())
+  const [brand, setBrand] = useState<AppBranding>(DEFAULT_BRANDING)
 
   useEffect(() => {
     if (user && !loading) navigate('/dashboard', { replace: true })
@@ -35,6 +37,9 @@ export default function Landing() {
         setPrices(current)
         setPrevPrices(previous)
       })
+      .catch((error) => console.error(error))
+    getBranding()
+      .then(setBrand)
       .catch((error) => console.error(error))
   }, [])
 
@@ -52,8 +57,16 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2">
-            <Briefcase className="h-6 w-6 text-primary" />
-            <span className="text-lg font-bold">SKLedger</span>
+            {brand.logo_url ? (
+              <img
+                src={brand.logo_url}
+                alt={brand.brand_name}
+                className="h-8 w-8 rounded object-contain"
+              />
+            ) : (
+              <Briefcase className="h-6 w-6 text-primary" />
+            )}
+            <span className="text-lg font-bold">{brand.brand_name}</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
@@ -231,8 +244,12 @@ export default function Landing() {
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-4 py-10 md:flex-row md:items-center">
           <div className="flex items-center gap-2">
-            <Briefcase className="h-5 w-5 text-primary" />
-            <span className="font-bold">SKLedger</span>
+            {brand.logo_url ? (
+              <img src={brand.logo_url} alt={brand.brand_name} className="h-6 w-6 rounded object-contain" />
+            ) : (
+              <Briefcase className="h-5 w-5 text-primary" />
+            )}
+            <span className="font-bold">{brand.brand_name}</span>
           </div>
           <p className="text-sm text-muted-foreground">{t('landing.cta.subtitle')}</p>
         </div>

@@ -125,6 +125,11 @@ export interface AppSettings {
   updated_at?: string
 }
 
+export interface AppBranding {
+  brand_name: string
+  logo_url: string | null
+}
+
 export type PlanPrices = Record<PlanId, number>
 
 export interface PlanPriceInfo {

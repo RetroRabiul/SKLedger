@@ -224,6 +224,18 @@ alter table public.app_settings add column if not exists payment_note text;
 insert into public.app_settings (id) values (1) on conflict (id) do nothing;
 
 -- ---------------------------------------------------------------------------
+-- app_branding  (publicly readable brand name + logo, used by the landing page)
+-- ---------------------------------------------------------------------------
+create table if not exists public.app_branding (
+  id         integer primary key check (id = 1),
+  brand_name text not null default 'SKLedger',
+  logo_url   text,
+  updated_at timestamptz not null default now()
+);
+
+insert into public.app_branding (id) values (1) on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------------
 -- announcements  (admin broadcasts shown in the in-app notification bell)
 -- ---------------------------------------------------------------------------
 create table if not exists public.announcements (
@@ -264,6 +276,7 @@ alter table public.projects         enable row level security;
 alter table public.project_payments enable row level security;
 alter table public.subscriptions    enable row level security;
 alter table public.app_settings     enable row level security;
+alter table public.app_branding     enable row level security;
 alter table public.announcements    enable row level security;
 alter table public.plan_prices      enable row level security;
 
@@ -332,6 +345,15 @@ create policy appsettings_read on public.app_settings
 
 drop policy if exists appsettings_admin_all on public.app_settings;
 create policy appsettings_admin_all on public.app_settings
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- app_branding (publicly readable, including anonymous landing visitors; only admin writes)
+drop policy if exists app_branding_read on public.app_branding;
+create policy app_branding_read on public.app_branding
+  for select using (true);
+
+drop policy if exists app_branding_admin_all on public.app_branding;
+create policy app_branding_admin_all on public.app_branding
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- announcements (everyone reads; only admin writes)
@@ -469,6 +491,10 @@ create trigger projects_touch before update on public.projects
 
 drop trigger if exists appsettings_touch on public.app_settings;
 create trigger appsettings_touch before update on public.app_settings
+  for each row execute function public.set_updated_at();
+
+drop trigger if exists app_branding_touch on public.app_branding;
+create trigger app_branding_touch before update on public.app_branding
   for each row execute function public.set_updated_at();
 
 create or replace function public.remember_previous_plan_price()

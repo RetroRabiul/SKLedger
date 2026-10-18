@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Check, ExternalLink, Megaphone, Plus, Trash2, Users, Wallet, Clock, X } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Briefcase, Check, ExternalLink, Megaphone, Plus, Trash2, Users, Wallet, Clock, X } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   adminSetPlan,
@@ -11,8 +11,10 @@ import {
 import { getAppSettings, savePaymentDetails } from '../services/appSettings'
 import { defaultPlanPrices, getPlanPrices, savePlanPrices } from '../services/planPrices'
 import { createAnnouncement, deleteAnnouncement, listAnnouncements } from '../services/announcements'
+import { DEFAULT_BRANDING, getBranding, saveBranding } from '../services/branding'
+import { uploadLogo } from '../services/userSettings'
 import { PLAN_ORDER } from '../config/plans'
-import type { AdminUserRow, Announcement, PaymentChannel, PlanId, PlanPrices } from '../types'
+import type { AdminUserRow, Announcement, AppBranding, PaymentChannel, PlanId, PlanPrices } from '../types'
 import { getProofUrl } from '../services/subscriptions'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
@@ -22,7 +24,7 @@ const DURATIONS = [30, 90, 180, 365, 0]
 
 export default function Admin() {
   const { t, lang } = useI18n()
-  const { currency, refresh } = useProfile()
+  const { currency, refresh, brandName: myBrandName, logoUrl: myLogoUrl } = useProfile()
   const [users, setUsers] = useState<AdminUserRow[]>([])
   const [subs, setSubs] = useState<AdminSubscriptionRow[]>([])
   const [loading, setLoading] = useState(true)
@@ -32,6 +34,9 @@ export default function Admin() {
   const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
   const [savedPrices, setSavedPrices] = useState<PlanPrices>(defaultPlanPrices())
   const [savingPrices, setSavingPrices] = useState(false)
+  const [brand, setBrand] = useState<AppBranding>(DEFAULT_BRANDING)
+  const [savingBrand, setSavingBrand] = useState(false)
+  const brandLogoRef = useRef<HTMLInputElement>(null)
   const [drafts, setDrafts] = useState<Record<string, { plan: PlanId; days: number }>>({})
   const [announcements, setAnnouncements] = useState<Announcement[]>([])
   const [newTitle, setNewTitle] = useState('')
@@ -40,8 +45,15 @@ export default function Admin() {
 
   const load = () => {
     setLoading(true)
-    Promise.all([listUsers(), listSubscriptions(), getAppSettings(), listAnnouncements(), getPlanPrices()])
-      .then(([u, s, app, ann, p]) => {
+    Promise.all([
+      listUsers(),
+      listSubscriptions(),
+      getAppSettings(),
+      listAnnouncements(),
+      getPlanPrices(),
+      getBranding(),
+    ])
+      .then(([u, s, app, ann, p, b]) => {
         setUsers(u)
         setSubs(s)
         setMethods(app?.payment_methods ?? [])
@@ -49,6 +61,13 @@ export default function Admin() {
         setAnnouncements(ann)
         setPrices(p)
         setSavedPrices(p)
+        setBrand({
+          brand_name:
+            b.brand_name && b.brand_name !== DEFAULT_BRANDING.brand_name
+              ? b.brand_name
+              : myBrandName || b.brand_name,
+          logo_url: b.logo_url ?? myLogoUrl ?? null,
+        })
       })
       .catch((error) => toast.error((error as Error).message ?? t('common.error')))
       .finally(() => setLoading(false))
@@ -140,6 +159,30 @@ export default function Admin() {
       toast.error((error as Error).message ?? t('common.error'))
     } finally {
       setSavingPrices(false)
+    }
+  }
+
+  const handleSaveBrand = async () => {
+    setSavingBrand(true)
+    try {
+      await saveBranding(brand.brand_name.trim() || DEFAULT_BRANDING.brand_name, brand.logo_url)
+      toast.success(t('toast.saved'))
+      load()
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    } finally {
+      setSavingBrand(false)
+    }
+  }
+
+  const handleBrandLogo = async (file: File) => {
+    try {
+      const url = await uploadLogo(file)
+      setBrand((prev) => ({ ...prev, logo_url: url }))
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    } finally {
+      if (brandLogoRef.current) brandLogoRef.current.value = ''
     }
   }
 
@@ -368,6 +411,83 @@ export default function Admin() {
           <button
             onClick={() => void handleSavePrices()}
             disabled={savingPrices || priceChanges.length === 0}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          >
+            {t('common.save')}
+          </button>
+        </div>
+      </section>
+
+      {/* Branding */}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">{t('admin.branding')}</h2>
+        <div className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
+          <p className="text-xs text-muted-foreground">{t('admin.brandingHint')}</p>
+          <div className="flex flex-wrap items-start gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted">
+              {brand.logo_url ? (
+                <img
+                  src={brand.logo_url}
+                  alt={brand.brand_name}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <Briefcase className="h-6 w-6 text-muted-foreground" />
+              )}
+            </div>
+            <div className="min-w-[12rem] flex-1 space-y-3">
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-muted-foreground">
+                  {t('settings.brandName')}
+                </span>
+                <input
+                  value={brand.brand_name}
+                  onChange={(e) => setBrand((prev) => ({ ...prev, brand_name: e.target.value }))}
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                />
+              </label>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  ref={brandLogoRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) void handleBrandLogo(file)
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => brandLogoRef.current?.click()}
+                  className="rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-accent"
+                >
+                  {t('admin.uploadLogo')}
+                </button>
+                {myLogoUrl && brand.logo_url !== myLogoUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setBrand((prev) => ({ ...prev, logo_url: myLogoUrl }))}
+                    className="rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-accent"
+                  >
+                    {t('admin.useMyLogo')}
+                  </button>
+                )}
+                {brand.logo_url && (
+                  <button
+                    type="button"
+                    onClick={() => setBrand((prev) => ({ ...prev, logo_url: null }))}
+                    className="rounded-md border px-3 py-1.5 text-xs font-medium text-destructive hover:bg-accent"
+                  >
+                    {t('admin.removeLogo')}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => void handleSaveBrand()}
+            disabled={savingBrand}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
             {t('common.save')}
