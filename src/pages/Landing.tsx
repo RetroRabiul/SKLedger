@@ -184,6 +184,12 @@ export default function Landing() {
                         {t('plan.feature.notifications')}
                       </li>
                     )}
+                    {plan.features.branding && (
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-primary" />
+                        {t('plan.feature.branding')}
+                      </li>
+                    )}
                   </ul>
                   <Link
                     to="/auth"

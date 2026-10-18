@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bell, Download, Moon, Palette, Sun, Upload, Monitor } from 'lucide-react'
+import { Bell, Download, Image as ImageIcon, Moon, Palette, Sun, Upload, Monitor } from 'lucide-react'
 import { toast } from 'sonner'
 import { THEMES } from '../config/themes'
 import { useThemeStore } from '../stores/themeStore'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
+import { uploadLogo } from '../services/userSettings'
 import { getClients, createClient } from '../services/clients'
 import { getProjects, createProject } from '../services/projects'
 import { getAllPayments, createPayment } from '../services/payments'
@@ -37,6 +38,7 @@ export default function Settings() {
     consume,
     savePreference,
     refresh,
+    logoUrl,
   } = useProfile()
 
   const [brandName, setBrandName] = useState(settings?.brand_name ?? 'SKLedger')
@@ -44,6 +46,7 @@ export default function Settings() {
   const [notify, setNotify] = useState<NotifySettings>(DEFAULT_NOTIFY_SETTINGS)
   const [busy, setBusy] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const logoRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     setBrandName(settings?.brand_name ?? 'SKLedger')
@@ -214,6 +217,19 @@ export default function Settings() {
     }
   }
 
+  const handleLogoUpload = async (file: File) => {
+    setBusy(true)
+    try {
+      const url = await uploadLogo(file)
+      await persist({ logo_url: url })
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    } finally {
+      setBusy(false)
+      if (logoRef.current) logoRef.current.value = ''
+    }
+  }
+
   return (
     <div className="max-w-3xl space-y-6">
       <div>
@@ -310,23 +326,90 @@ export default function Settings() {
               ))}
             </select>
           </label>
-          <label className="block sm:col-span-2">
-            <span className="mb-1 block text-xs font-medium text-muted-foreground">
-              {t('settings.brandName')}
-            </span>
-            <input
-              value={brandName}
-              onChange={(e) => setBrandName(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-            />
-          </label>
         </div>
         <button
-          onClick={() => void persist({ brand_name: brandName, currency })}
+          onClick={() => void persist({ currency })}
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
         >
           {t('common.save')}
         </button>
+      </section>
+
+      {/* Branding (Business plan only) */}
+      <section className="space-y-4 rounded-lg border bg-card p-6">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <ImageIcon className="h-4 w-4" />
+          {t('settings.branding')}
+        </h2>
+        {can('branding') ? (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block sm:col-span-2">
+                <span className="mb-1 block text-xs font-medium text-muted-foreground">
+                  {t('settings.brandName')}
+                </span>
+                <input
+                  value={brandName}
+                  onChange={(e) => setBrandName(e.target.value)}
+                  className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                />
+              </label>
+              <div className="sm:col-span-2">
+                <span className="mb-1 block text-xs font-medium text-muted-foreground">
+                  {t('settings.logo')}
+                </span>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-md border bg-muted">
+                    {logoUrl ? (
+                      <img src={logoUrl} alt="logo" className="h-full w-full object-contain" />
+                    ) : (
+                      <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </span>
+                  <button
+                    onClick={() => logoRef.current?.click()}
+                    disabled={busy}
+                    className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-accent disabled:opacity-50"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {t('settings.uploadLogo')}
+                  </button>
+                  {logoUrl && (
+                    <button
+                      onClick={() => void persist({ logo_url: null })}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      {t('settings.removeLogo')}
+                    </button>
+                  )}
+                  <input
+                    ref={logoRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) void handleLogoUpload(file)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => void persist({ brand_name: brandName })}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+            >
+              {t('common.save')}
+            </button>
+          </>
+        ) : (
+          <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+            {t('settings.brandingLocked')}{' '}
+            <Link to="/upgrade" className="text-primary hover:underline">
+              {t('common.upgradeNow')}
+            </Link>
+          </div>
+        )}
       </section>
 
       {/* Notifications */}

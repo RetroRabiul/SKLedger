@@ -6,6 +6,25 @@ export interface SettingsUpdates {
   language?: LanguageId
   currency?: string
   brand_name?: string | null
+  logo_url?: string | null
+}
+
+export async function uploadLogo(file: File): Promise<string> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const ext = file.name.split('.').pop() || 'png'
+  const path = `${user.id}/${Date.now()}.${ext}`
+  const { error } = await supabase.storage.from('brand-assets').upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+  })
+  if (error) throw error
+
+  const { data } = supabase.storage.from('brand-assets').getPublicUrl(path)
+  return data.publicUrl
 }
 
 export async function getSettings(): Promise<UserSettings | null> {

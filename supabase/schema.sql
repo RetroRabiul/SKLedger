@@ -117,8 +117,12 @@ create table if not exists public.user_settings (
   language    text not null default 'en' check (language in ('en', 'bn')),
   currency    text not null default 'BDT',
   brand_name  text default 'SKLedger',
+  logo_url    text,
   updated_at  timestamptz not null default now()
 );
+
+-- Backfill the column for projects created before branding existed.
+alter table public.user_settings add column if not exists logo_url text;
 
 -- ---------------------------------------------------------------------------
 -- clients
@@ -357,6 +361,28 @@ create policy proof_read on storage.objects
     bucket_id = 'payment-proofs'
     and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin())
   );
+
+-- Branding logos (public so they can appear on invoices; Business plan only).
+insert into storage.buckets (id, name, public)
+values ('brand-assets', 'brand-assets', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists brand_upload on storage.objects;
+create policy brand_upload on storage.objects
+  for insert to authenticated
+  with check (
+    bucket_id = 'brand-assets'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists brand_read on storage.objects;
+create policy brand_read on storage.objects
+  for select using (bucket_id = 'brand-assets');
+
+drop policy if exists brand_update on storage.objects;
+create policy brand_update on storage.objects
+  for update to authenticated
+  using (bucket_id = 'brand-assets' and (storage.foldername(name))[1] = auth.uid()::text);
 
 -- ---------------------------------------------------------------------------
 -- Seed owner profile as admin (in case the trigger missed an existing row)

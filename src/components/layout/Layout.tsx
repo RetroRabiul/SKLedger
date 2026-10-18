@@ -21,7 +21,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth()
   const { t } = useI18n()
-  const { isAdmin, plan } = useProfile()
+  const { isAdmin, plan, brandName, logoUrl } = useProfile()
   useDeadlineNotifications()
 
   return (
@@ -30,8 +30,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
           <div className="flex items-center gap-6 overflow-x-auto">
             <div className="flex items-center gap-2">
-              <Briefcase className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold">SKLedger</span>
+              {logoUrl ? (
+                <img src={logoUrl} alt={brandName} className="h-6 w-6 rounded object-cover" />
+              ) : (
+                <Briefcase className="h-6 w-6 text-primary" />
+              )}
+              <span className="text-lg font-bold">{brandName}</span>
             </div>
             <NavLink to="/dashboard" className={linkClass}>
               <LayoutDashboard className="h-4 w-4" />

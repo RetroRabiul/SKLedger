@@ -105,6 +105,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         language: updates.language ?? prev?.language ?? 'en',
         currency: updates.currency ?? prev?.currency ?? 'BDT',
         brand_name: updates.brand_name ?? prev?.brand_name ?? 'SKLedger',
+        logo_url: updates.logo_url ?? prev?.logo_url ?? null,
       }))
     },
     [user, setLang, setAccent]
@@ -121,6 +122,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       planDef,
       currency: settings?.currency ?? 'BDT',
       brandName: settings?.brand_name ?? 'SKLedger',
+      logoUrl: settings?.logo_url ?? null,
       can,
       checkLimit,
       refresh,

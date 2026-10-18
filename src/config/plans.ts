@@ -6,6 +6,7 @@ export interface PlanFeatures {
   notifications: boolean
   checklistPresets: boolean
   bengali: boolean
+  branding: boolean
 }
 
 export interface PlanDef {
@@ -25,6 +26,7 @@ export interface PlanDef {
     notifications: boolean
     checklistPresets: boolean
     bengali: boolean
+    branding: boolean
   }
 }
 
@@ -41,6 +43,7 @@ export const PLANS: Record<PlanId, PlanDef> = {
       notifications: false,
       checklistPresets: false,
       bengali: true,
+      branding: false,
     },
   },
   pro: {
@@ -55,6 +58,7 @@ export const PLANS: Record<PlanId, PlanDef> = {
       notifications: true,
       checklistPresets: true,
       bengali: true,
+      branding: false,
     },
   },
   business: {
@@ -69,6 +73,7 @@ export const PLANS: Record<PlanId, PlanDef> = {
       notifications: true,
       checklistPresets: true,
       bengali: true,
+      branding: true,
     },
   },
 }

@@ -107,6 +107,7 @@ export interface UserSettings {
   language: LanguageId
   currency: string
   brand_name?: string | null
+  logo_url?: string | null
   updated_at?: string
 }
 

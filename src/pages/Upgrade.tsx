@@ -116,6 +116,12 @@ export default function Upgrade() {
                     {t('plan.feature.notifications')}
                   </li>
                 )}
+                {def.features.branding && (
+                  <li className="flex items-center gap-1.5">
+                    <Check className="h-3.5 w-3.5 text-primary" />
+                    {t('plan.feature.branding')}
+                  </li>
+                )}
               </ul>
               {id !== 'free' && !isCurrent && (
                 <button

@@ -263,6 +263,14 @@ export const messages = {
   'settings.accent': { en: 'Accent color', bn: 'প্রধান রং' },
   'settings.language': { en: 'Language', bn: 'ভাষা' },
   'settings.brandName': { en: 'Brand name', bn: 'ব্র্যান্ডের নাম' },
+  'settings.branding': { en: 'Branding', bn: 'ব্র্যান্ডিং' },
+  'settings.brandingLocked': {
+    en: 'Custom branding (brand name & logo) is available on the Business plan.',
+    bn: 'কাস্টম ব্র্যান্ডিং (ব্র্যান্ড নাম ও লোগো) Business প্ল্যানে পাওয়া যায়।',
+  },
+  'settings.uploadLogo': { en: 'Upload logo', bn: 'লোগো আপলোড' },
+  'settings.logo': { en: 'Logo', bn: 'লোগো' },
+  'settings.removeLogo': { en: 'Remove', bn: 'মুছুন' },
   'settings.currency': { en: 'Currency', bn: 'মুদ্রা' },
   'settings.data': { en: 'Data management', bn: 'ডেটা ম্যানেজমেন্ট' },
   'settings.exportCsv': { en: 'Export clients & projects (CSV)', bn: 'ক্লায়েন্ট ও প্রজেক্ট এক্সপোর্ট (CSV)' },
@@ -358,6 +366,7 @@ export const messages = {
   'plan.feature.invoices': { en: 'Invoices', bn: 'ইনভয়েস' },
   'plan.feature.analytics': { en: 'Analytics', bn: 'অ্যানালিটিক্স' },
   'plan.feature.notifications': { en: 'Deadline reminders', bn: 'ডেডলাইন রিমাইন্ডার' },
+  'plan.feature.branding': { en: 'Custom branding & logo', bn: 'কাস্টম ব্র্যান্ডিং ও লোগো' },
   'plan.feature.presets': { en: 'Checklist presets', bn: 'চেকলিস্ট প্রিসেট' },
 
   // toasts -----------------------------------------------------------------

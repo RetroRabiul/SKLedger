@@ -14,7 +14,7 @@ interface Props {
 
 export default function InvoiceModal({ open, onClose, project, payments }: Props) {
   const { t, lang } = useI18n()
-  const { currency, brandName } = useProfile()
+  const { currency, brandName, logoUrl } = useProfile()
 
   if (!project) return null
 
@@ -48,8 +48,11 @@ export default function InvoiceModal({ open, onClose, project, payments }: Props
       <div className="invoice-print-area space-y-6 text-sm">
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-bold">{brandName}</h2>
-            <p className="text-muted-foreground">SKLedger</p>
+            <div className="flex items-center gap-2">
+              {logoUrl && <img src={logoUrl} alt={brandName} className="h-10 w-10 rounded object-contain" />}
+              <h2 className="text-xl font-bold">{brandName}</h2>
+            </div>
+            <p className="text-muted-foreground">{brandName}</p>
           </div>
           <div className="text-right">
             <p className="font-semibold">{t('invoice.title')}</p>

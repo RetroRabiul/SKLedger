@@ -23,6 +23,7 @@ export interface ProfileContextValue {
   planDef: PlanDef
   currency: string
   brandName: string
+  logoUrl: string | null
   can: (feature: PlanFeature) => boolean
   checkLimit: (resource: LimitResource) => LimitResult
   refresh: () => Promise<void>
