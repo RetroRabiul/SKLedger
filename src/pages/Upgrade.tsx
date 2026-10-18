@@ -5,7 +5,7 @@ import Modal from '../components/ui/Modal'
 import { PLANS } from '../config/plans'
 import { getMySubscriptions, requestUpgrade, uploadProof } from '../services/subscriptions'
 import { getAppSettings } from '../services/appSettings'
-import { defaultPlanPrices, getPlanPrices } from '../services/planPrices'
+import { defaultPlanPrices, getPlanPriceInfo } from '../services/planPrices'
 import type { AppSettings, PlanId, PlanPrices, Subscription } from '../types'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
@@ -25,6 +25,7 @@ export default function Upgrade() {
   const [submitting, setSubmitting] = useState(false)
   const [app, setApp] = useState<AppSettings | null>(null)
   const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
+  const [prevPrices, setPrevPrices] = useState<PlanPrices>(defaultPlanPrices())
 
   const load = () => {
     getMySubscriptions()
@@ -41,8 +42,11 @@ export default function Upgrade() {
         if (first?.label) setMethod(first.label)
       })
       .catch((error) => console.error(error))
-    getPlanPrices()
-      .then(setPrices)
+    getPlanPriceInfo()
+      .then(({ current, previous }) => {
+        setPrices(current)
+        setPrevPrices(previous)
+      })
       .catch((error) => console.error(error))
   }, [])
 
@@ -120,8 +124,13 @@ export default function Upgrade() {
                   </span>
                 )}
               </div>
-              <p className="mt-2 text-2xl font-bold">
+              <p className="mt-2 flex items-baseline gap-2 text-2xl font-bold">
                 ৳{prices[id]}
+                {prevPrices[id] > prices[id] && (
+                  <span className="text-base font-normal text-muted-foreground line-through">
+                    ৳{prevPrices[id]}
+                  </span>
+                )}
                 <span className="text-sm font-normal text-muted-foreground">{t('plan.perMonth')}</span>
               </p>
               <ul className="mt-4 flex-1 space-y-2 text-sm text-muted-foreground">

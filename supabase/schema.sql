@@ -239,13 +239,19 @@ create index if not exists announcements_created_at_idx on public.announcements 
 -- plan_prices  (admin-editable plan pricing; public read for the landing page)
 -- ---------------------------------------------------------------------------
 create table if not exists public.plan_prices (
-  plan       text primary key check (plan in ('free', 'pro', 'business')),
-  price_bdt  integer not null default 0 check (price_bdt >= 0),
-  updated_at timestamptz not null default now()
+  plan                text primary key check (plan in ('free', 'pro', 'business')),
+  price_bdt           integer not null default 0 check (price_bdt >= 0),
+  previous_price_bdt  integer not null default 0 check (previous_price_bdt >= 0),
+  updated_at          timestamptz not null default now()
 );
 
-insert into public.plan_prices (plan, price_bdt) values
-  ('free', 0), ('pro', 500), ('business', 1500)
+-- keep older installs in sync
+alter table public.plan_prices
+  add column if not exists previous_price_bdt integer not null default 0 check (previous_price_bdt >= 0);
+update public.plan_prices set previous_price_bdt = price_bdt where previous_price_bdt = 0 and price_bdt <> 0;
+
+insert into public.plan_prices (plan, price_bdt, previous_price_bdt) values
+  ('free', 0, 0), ('pro', 500, 500), ('business', 1500, 1500)
 on conflict (plan) do nothing;
 
 -- ---------------------------------------------------------------------------
@@ -464,6 +470,22 @@ create trigger projects_touch before update on public.projects
 drop trigger if exists appsettings_touch on public.app_settings;
 create trigger appsettings_touch before update on public.app_settings
   for each row execute function public.set_updated_at();
+
+create or replace function public.remember_previous_plan_price()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.price_bdt is distinct from old.price_bdt then
+    new.previous_price_bdt := old.price_bdt;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists plan_prices_remember on public.plan_prices;
+create trigger plan_prices_remember before update on public.plan_prices
+  for each row execute function public.remember_previous_plan_price();
 
 drop trigger if exists plan_prices_touch on public.plan_prices;
 create trigger plan_prices_touch before update on public.plan_prices

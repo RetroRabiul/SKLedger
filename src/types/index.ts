@@ -127,6 +127,11 @@ export interface AppSettings {
 
 export type PlanPrices = Record<PlanId, number>
 
+export interface PlanPriceInfo {
+  current: PlanPrices
+  previous: PlanPrices
+}
+
 export interface Announcement {
   id: string
   title: string

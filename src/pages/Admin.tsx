@@ -320,6 +320,7 @@ export default function Admin() {
         <h2 className="text-lg font-semibold">{t('admin.planPrices')}</h2>
         <div className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
           <p className="text-xs text-muted-foreground">{t('admin.planPricesHint')}</p>
+          <p className="text-xs text-muted-foreground">{t('admin.planPricesStrikeHint')}</p>
           <div className="grid gap-3 sm:grid-cols-3">
             {PLAN_ORDER.map((p) => {
               const changed = p !== 'free' && prices[p] !== savedPrices[p]

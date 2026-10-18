@@ -15,7 +15,7 @@ import {
 import { useI18n } from '../hooks/useI18n'
 import { useAuth } from '../hooks/useAuth'
 import { PLAN_ORDER, PLANS } from '../config/plans'
-import { defaultPlanPrices, getPlanPrices } from '../services/planPrices'
+import { defaultPlanPrices, getPlanPriceInfo } from '../services/planPrices'
 import type { PlanPrices } from '../types'
 
 export default function Landing() {
@@ -23,14 +23,18 @@ export default function Landing() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
+  const [prevPrices, setPrevPrices] = useState<PlanPrices>(defaultPlanPrices())
 
   useEffect(() => {
     if (user && !loading) navigate('/dashboard', { replace: true })
   }, [user, loading, navigate])
 
   useEffect(() => {
-    getPlanPrices()
-      .then(setPrices)
+    getPlanPriceInfo()
+      .then(({ current, previous }) => {
+        setPrices(current)
+        setPrevPrices(previous)
+      })
       .catch((error) => console.error(error))
   }, [])
 
@@ -165,8 +169,13 @@ export default function Landing() {
                     </span>
                   )}
                   <h3 className="text-xl font-semibold">{t(`plan.${key}`)}</h3>
-                  <p className="mt-2 text-2xl font-bold">
+                  <p className="mt-2 flex items-baseline gap-2 text-2xl font-bold">
                     ৳{prices[key]}
+                    {prevPrices[key] > prices[key] && (
+                      <span className="text-base font-normal text-muted-foreground line-through">
+                        ৳{prevPrices[key]}
+                      </span>
+                    )}
                     <span className="text-sm font-normal text-muted-foreground">
                       {t('plan.perMonth')}
                     </span>

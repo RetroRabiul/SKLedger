@@ -364,6 +364,10 @@ export const messages = {
     en: 'Prices (BDT) shown on the landing and upgrade pages.',
     bn: 'ল্যান্ডিং ও আপগ্রেড পেজে দেখানো মূল্য (টাকা)।',
   },
+  'admin.planPricesStrikeHint': {
+    en: 'When you change a price, the old price is shown crossed out to users until the next change.',
+    bn: 'মূল্য পরিবর্তন করলে পরবর্তী পরিবর্তনের আগ পর্যন্ত পুরোনো মূল্য ব্যবহারকারীদের কাছে কাটা দাগ দিয়ে দেখানো হয়।',
+  },
   'admin.currentPrice': { en: 'Current', bn: 'বর্তমান' },
   'admin.was': { en: 'Was', bn: 'ছিল' },
   'admin.pendingPriceChanges': { en: 'Pending changes', bn: 'অপেক্ষমাণ পরিবর্তন' },
