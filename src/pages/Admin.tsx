@@ -154,19 +154,21 @@ export default function Admin() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">{t('admin.title')}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('admin.title')}</h1>
         <p className="text-muted-foreground">{t('admin.subtitle')}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-lg border bg-card p-5">
-            <div className="flex items-center justify-between">
-              <div>
+          <div key={card.label} className="rounded-xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-sm text-muted-foreground">{card.label}</p>
-                <p className="mt-1 text-2xl font-bold">{loading ? '—' : card.value}</p>
+                <p className="mt-1 truncate text-2xl font-bold">{loading ? '—' : card.value}</p>
               </div>
-              <card.icon className="h-6 w-6 text-muted-foreground" />
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <card.icon className="h-5 w-5 text-primary" />
+              </span>
             </div>
           </div>
         ))}
@@ -182,7 +184,7 @@ export default function Admin() {
         ) : (
           <div className="space-y-3">
             {stats.pending.map((s) => (
-              <div key={s.id} className="rounded-lg border bg-card p-4">
+              <div key={s.id} className="rounded-xl border bg-card p-4 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="font-medium">{s.profiles?.email ?? s.user_id.slice(0, 8)}</p>
@@ -230,7 +232,7 @@ export default function Admin() {
       {/* Payment details shown on the upgrade page */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t('admin.paymentDetails')}</h2>
-        <div className="space-y-4 rounded-lg border bg-card p-5">
+        <div className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
           <p className="text-xs text-muted-foreground">{t('admin.paymentDetailsHint')}</p>
 
           <div className="space-y-2">
@@ -292,7 +294,7 @@ export default function Admin() {
       {/* Announcements */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t('admin.announcements')}</h2>
-        <div className="space-y-4 rounded-lg border bg-card p-5">
+        <div className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
           <p className="text-xs text-muted-foreground">{t('admin.announcementHint')}</p>
           <label className="block">
             <span className="mb-1 block text-xs font-medium text-muted-foreground">
@@ -356,22 +358,22 @@ export default function Admin() {
       {/* Users */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t('admin.usersTitle')}</h2>
-        <div className="overflow-x-auto rounded-lg border">
+        <div className="overflow-x-auto rounded-xl border bg-card shadow-sm">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs text-muted-foreground">
               <tr>
-                <th className="px-4 py-2">{t('admin.user')}</th>
-                <th className="px-4 py-2">{t('admin.role')}</th>
-                <th className="px-4 py-2">{t('admin.plan')}</th>
-                <th className="px-4 py-2">{t('admin.revenue')}</th>
-                <th className="px-4 py-2">{t('admin.joined')}</th>
+                <th className="px-4 py-2.5">{t('admin.user')}</th>
+                <th className="px-4 py-2.5">{t('admin.role')}</th>
+                <th className="px-4 py-2.5">{t('admin.plan')}</th>
+                <th className="px-4 py-2.5">{t('admin.revenue')}</th>
+                <th className="px-4 py-2.5">{t('admin.joined')}</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => {
                 const draft = drafts[u.id] ?? { plan: u.plan, days: 30 }
                 return (
-                <tr key={u.id} className="border-t">
+                <tr key={u.id} className="border-t transition-colors hover:bg-accent/40">
                   <td className="px-4 py-2">
                     <p className="font-medium">{u.full_name ?? u.email}</p>
                     <p className="text-xs text-muted-foreground">{u.email}</p>

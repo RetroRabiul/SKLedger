@@ -233,12 +233,12 @@ export default function Settings() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('settings.title')}</h1>
         <p className="text-muted-foreground">{t('settings.subtitle')}</p>
       </div>
 
       {/* Appearance */}
-      <section className="space-y-4 rounded-lg border bg-card p-6">
+      <section className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold">{t('settings.appearance')}</h2>
 
         <div>
@@ -290,7 +290,7 @@ export default function Settings() {
       </section>
 
       {/* Preferences */}
-      <section className="space-y-4 rounded-lg border bg-card p-6">
+      <section className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold">{t('settings.prefs')}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
@@ -336,7 +336,7 @@ export default function Settings() {
       </section>
 
       {/* Branding (Business plan only) */}
-      <section className="space-y-4 rounded-lg border bg-card p-6">
+      <section className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <ImageIcon className="h-4 w-4" />
           {t('settings.branding')}
@@ -413,7 +413,7 @@ export default function Settings() {
       </section>
 
       {/* Notifications */}
-      <section className="space-y-4 rounded-lg border bg-card p-6">
+      <section className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <Bell className="h-4 w-4" />
           {t('notify.title')}
@@ -464,7 +464,7 @@ export default function Settings() {
       </section>
 
       {/* Data management */}
-      <section className="space-y-4 rounded-lg border bg-card p-6">
+      <section className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold">{t('settings.data')}</h2>
         <div className="flex flex-wrap gap-2">
           <button
@@ -516,7 +516,7 @@ export default function Settings() {
       </section>
 
       {/* Subscription */}
-      <section className="space-y-4 rounded-lg border bg-card p-6">
+      <section className="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold">{t('settings.subscription')}</h2>
         <div className="flex items-center justify-between rounded-md border p-4">
           <div>

@@ -65,9 +65,11 @@ export default function Landing() {
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 md:grid-cols-2 md:py-28">
+      <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-full bg-gradient-to-b from-primary/10 via-background to-background" />
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 md:grid-cols-2 md:py-28">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
             <ShieldCheck className="h-3.5 w-3.5" />
             {t('landing.badge')}
           </span>
@@ -109,9 +111,10 @@ export default function Landing() {
             </div>
           </div>
         </div>
+        </div>
       </section>
 
-      <section id="features" className="border-t py-20">
+      <section id="features" className="scroll-mt-20 border-t py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight">{t('landing.features.title')}</h2>
@@ -119,7 +122,7 @@ export default function Landing() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {features.map((feature) => (
-              <div key={feature.title} className="rounded-xl border bg-card p-6">
+              <div key={feature.title} className="rounded-xl border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                   <feature.icon className="h-5 w-5 text-primary" />
                 </span>
@@ -131,7 +134,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="pricing" className="border-t py-20">
+      <section id="pricing" className="scroll-mt-20 border-t py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight">{t('landing.pricing.title')}</h2>
@@ -143,7 +146,7 @@ export default function Landing() {
               return (
                 <div
                   key={key}
-                  className={`flex flex-col rounded-xl border p-6 ${
+                  className={`flex flex-col rounded-xl border p-6 shadow-sm ${
                     key === 'pro' ? 'border-primary ring-1 ring-primary' : 'bg-card'
                   }`}
                 >

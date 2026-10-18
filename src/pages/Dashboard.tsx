@@ -138,7 +138,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('dashboard.title')}</h1>
         <p className="text-muted-foreground">
           {t('dashboard.welcome')}, {profile?.full_name || profile?.email}
         </p>
@@ -146,20 +146,22 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-lg border bg-card p-5">
-            <div className="flex items-center justify-between">
-              <div>
+          <div key={card.label} className="rounded-xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-muted-foreground">{card.label}</p>
-                <h3 className="mt-1 text-2xl font-bold">{loading ? '—' : card.value}</h3>
+                <h3 className="mt-1 truncate text-2xl font-bold">{loading ? '—' : card.value}</h3>
               </div>
-              <card.icon className="h-7 w-7 text-muted-foreground" />
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <card.icon className="h-5 w-5 text-primary" />
+              </span>
             </div>
           </div>
         ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-lg border bg-card p-5">
+        <div className="rounded-xl border bg-card p-5 shadow-sm">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h3 className="text-lg font-semibold">{t('dashboard.revenueChart')}</h3>
             {can('analytics') && (
@@ -240,7 +242,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="rounded-lg border bg-card p-6">
+        <div className="rounded-xl border bg-card p-6 shadow-sm">
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
             <Clock className="h-4 w-4" />
             {t('dashboard.upcomingDeadlines')}
@@ -265,7 +267,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-lg border bg-card p-6">
+        <div className="rounded-xl border bg-card p-6 shadow-sm">
           <h3 className="mb-4 text-lg font-semibold">{t('dashboard.activeProjectsTitle')}</h3>
           {stats.active.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t('dashboard.noActive')}</p>
@@ -282,7 +284,7 @@ export default function Dashboard() {
             </ul>
           )}
         </div>
-        <div className="rounded-lg border bg-card p-6">
+        <div className="rounded-xl border bg-card p-6 shadow-sm">
           <h3 className="mb-4 text-lg font-semibold">{t('dashboard.recentProjects')}</h3>
           {projects.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t('dashboard.noRecent')}</p>

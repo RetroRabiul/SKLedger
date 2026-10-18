@@ -27,7 +27,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 20% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -46,15 +46,15 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222.2 47.4% 6%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 40% 10%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 222.2 40% 11%;
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
@@ -78,14 +78,32 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: none;
   }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.2);
+  }
+}
+
+:where(input, select, textarea):focus-visible {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.12);
+}
+
+:where(a, button, [role='button']):focus-visible {
+  outline: 2px solid hsl(var(--ring) / 0.5);
+  outline-offset: 2px;
 }
 
 @media (max-width: 639px) {

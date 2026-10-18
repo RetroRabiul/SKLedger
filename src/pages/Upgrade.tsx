@@ -80,7 +80,7 @@ export default function Upgrade() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t('upgrade.title')}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('upgrade.title')}</h1>
         <p className="text-muted-foreground">{t('upgrade.subtitle')}</p>
         {planExpiresAt && (
           <p className="mt-1 text-sm text-muted-foreground">
@@ -90,7 +90,7 @@ export default function Upgrade() {
       </div>
 
       {pending && (
-        <div className="flex items-center gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-700">
+        <div className="flex items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-700">
           <Clock className="h-4 w-4" />
           {t('upgrade.pendingNotice')}
         </div>
@@ -103,7 +103,7 @@ export default function Upgrade() {
           return (
             <div
               key={id}
-              className={`flex flex-col rounded-xl border p-6 ${
+              className={`flex flex-col rounded-xl border p-6 shadow-sm ${
                 isCurrent ? 'border-primary ring-1 ring-primary' : 'bg-card'
               }`}
             >
@@ -167,7 +167,7 @@ export default function Upgrade() {
         })}
       </div>
 
-      <section className="rounded-lg border bg-card p-6">
+      <section className="rounded-xl border bg-card p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold">{t('upgrade.myPayments')}</h2>
         {subs.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t('common.noData')}</p>
@@ -175,7 +175,8 @@ export default function Upgrade() {
           <ul className="space-y-2 text-sm">
             {subs.map((s) => (
               <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 last:border-0">
-                <span className="font-medium">{t(`plan.${s.plan}`)}</span>                <span className="text-muted-foreground">{s.method}</span>
+                <span className="font-medium">{t(`plan.${s.plan}`)}</span>
+                <span className="text-muted-foreground">{s.method}</span>
                 <span>{formatCurrency(s.amount, s.currency, lang)}</span>
                 <span className="text-muted-foreground">{formatDate(s.created_at, lang)}</span>
                 <span className={statusClass(s.status)}>{t(`status.${s.status}`)}</span>

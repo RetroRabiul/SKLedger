@@ -91,7 +91,7 @@ export default function Projects() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{t('projects.title')}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t('projects.title')}</h1>
           <p className="text-muted-foreground">{t('projects.subtitle')}</p>
         </div>
         {limit.canAdd ? (
@@ -143,7 +143,7 @@ export default function Projects() {
       </div>
 
       {!limit.canAdd && (
-        <div className="rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+        <div className="rounded-xl border border-primary/40 bg-primary/5 p-3 text-sm">
           <span className="font-medium">{t('projects.limitTitle')}. </span>
           {t('projects.limitBody', { limit: limit.limit })}
         </div>
@@ -152,7 +152,9 @@ export default function Projects() {
       {loading ? (
         <p className="p-6 text-sm text-muted-foreground">{t('common.loading')}</p>
       ) : projects.length === 0 ? (
-        <div className="rounded-lg border p-6 text-sm text-muted-foreground">{t('projects.empty')}</div>
+        <div className="rounded-xl border bg-card p-10 text-center text-sm text-muted-foreground shadow-sm">
+          {t('projects.empty')}
+        </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {projects
@@ -173,7 +175,7 @@ export default function Projects() {
                 ? (new Date(`${p.due_date}T23:59`).getTime() - Date.now()) / 3_600_000
                 : null
               return (
-                <div key={p.id} className="flex flex-col rounded-lg border bg-card p-4">
+                <div key={p.id} className="flex flex-col rounded-xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h3 className="font-semibold">{p.title}</h3>
