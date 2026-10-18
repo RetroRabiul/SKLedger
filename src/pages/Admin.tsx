@@ -30,6 +30,7 @@ export default function Admin() {
   const [note, setNote] = useState('')
   const [savingPayment, setSavingPayment] = useState(false)
   const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
+  const [savedPrices, setSavedPrices] = useState<PlanPrices>(defaultPlanPrices())
   const [savingPrices, setSavingPrices] = useState(false)
   const [drafts, setDrafts] = useState<Record<string, { plan: PlanId; days: number }>>({})
   const [announcements, setAnnouncements] = useState<Announcement[]>([])
@@ -47,6 +48,7 @@ export default function Admin() {
         setNote(app?.payment_note ?? '')
         setAnnouncements(ann)
         setPrices(p)
+        setSavedPrices(p)
       })
       .catch((error) => toast.error((error as Error).message ?? t('common.error')))
       .finally(() => setLoading(false))
@@ -64,6 +66,11 @@ export default function Admin() {
     const paidUsers = new Set(approved.map((s) => s.user_id)).size
     return { revenue, pending, paidUsers }
   }, [subs])
+
+  const priceChanges = useMemo(
+    () => PLAN_ORDER.filter((p) => p !== 'free' && prices[p] !== savedPrices[p]),
+    [prices, savedPrices],
+  )
 
   const handlePlanChange = async (userId: string, plan: PlanId, days: number) => {
     try {
@@ -314,27 +321,52 @@ export default function Admin() {
         <div className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
           <p className="text-xs text-muted-foreground">{t('admin.planPricesHint')}</p>
           <div className="grid gap-3 sm:grid-cols-3">
-            {PLAN_ORDER.map((p) => (
-              <label key={p} className="block">
-                <span className="mb-1 block text-xs font-medium text-muted-foreground">
-                  {t(`plan.${p}`)}
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  value={p === 'free' ? 0 : prices[p]}
-                  disabled={p === 'free'}
-                  onChange={(e) =>
-                    setPrices((prev) => ({ ...prev, [p]: Math.max(0, Number(e.target.value) || 0) }))
-                  }
-                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm disabled:opacity-60"
-                />
-              </label>
-            ))}
+            {PLAN_ORDER.map((p) => {
+              const changed = p !== 'free' && prices[p] !== savedPrices[p]
+              return (
+                <label key={p} className="block">
+                  <span className="mb-1 block text-xs font-medium text-muted-foreground">
+                    {t(`plan.${p}`)}
+                  </span>
+                  <input
+                    type="number"
+                    min={0}
+                    value={p === 'free' ? 0 : prices[p]}
+                    disabled={p === 'free'}
+                    onChange={(e) =>
+                      setPrices((prev) => ({ ...prev, [p]: Math.max(0, Number(e.target.value) || 0) }))
+                    }
+                    className="w-full rounded-lg border bg-background px-3 py-2 text-sm disabled:opacity-60"
+                  />
+                  <span className="mt-1 block text-xs">
+                    {changed ? (
+                      <span className="text-amber-600">
+                        {t('admin.was')} ৳{savedPrices[p]} <span aria-hidden>→</span>{' '}
+                        <span className="font-semibold">৳{prices[p]}</span>
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">
+                        {t('admin.currentPrice')}: ৳{savedPrices[p]}
+                      </span>
+                    )}
+                  </span>
+                </label>
+              )
+            })}
           </div>
+          {priceChanges.length > 0 ? (
+            <p className="text-xs text-amber-600">
+              {t('admin.pendingPriceChanges')}:{' '}
+              {priceChanges
+                .map((p) => `${t(`plan.${p}`)} ৳${savedPrices[p]} → ৳${prices[p]}`)
+                .join('  ·  ')}
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">{t('admin.noPriceChanges')}</p>
+          )}
           <button
             onClick={() => void handleSavePrices()}
-            disabled={savingPrices}
+            disabled={savingPrices || priceChanges.length === 0}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
             {t('common.save')}
