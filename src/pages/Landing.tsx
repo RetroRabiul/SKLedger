@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   ArrowRight,
   Briefcase,
@@ -21,15 +21,10 @@ import type { AppBranding, PlanPrices } from '../types'
 
 export default function Landing() {
   const { t } = useI18n()
-  const { user, loading } = useAuth()
-  const navigate = useNavigate()
+  const { user } = useAuth()
   const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
   const [prevPrices, setPrevPrices] = useState<PlanPrices>(defaultPlanPrices())
   const [brand, setBrand] = useState<AppBranding>(DEFAULT_BRANDING)
-
-  useEffect(() => {
-    if (user && !loading) navigate('/dashboard', { replace: true })
-  }, [user, loading, navigate])
 
   useEffect(() => {
     getPlanPriceInfo()
@@ -77,9 +72,11 @@ export default function Landing() {
             </a>
           </nav>
           <div className="flex items-center gap-2">
-            <Link to="/auth" className="rounded-md px-4 py-2 text-sm font-medium hover:bg-accent">
-              {t('common.signIn')}
-            </Link>
+            {!user && (
+              <Link to="/auth" className="rounded-md px-4 py-2 text-sm font-medium hover:bg-accent">
+                {t('common.signIn')}
+              </Link>
+            )}
             <Link
               to="/dashboard"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
