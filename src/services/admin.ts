@@ -2,25 +2,13 @@ import { supabase } from '../lib/supabase'
 import type { AdminUserRow, PlanId, Subscription } from '../types'
 
 export async function listUsers(): Promise<AdminUserRow[]> {
-  const [profilesRes, clientsRes, projectsRes, subsRes] = await Promise.all([
+  const [profilesRes, subsRes] = await Promise.all([
     supabase.from('profiles').select('*').order('created_at', { ascending: false }),
-    supabase.from('clients').select('user_id'),
-    supabase.from('projects').select('user_id'),
     supabase.from('subscriptions').select('user_id, amount, status'),
   ])
   if (profilesRes.error) throw profilesRes.error
-  if (clientsRes.error) throw clientsRes.error
-  if (projectsRes.error) throw projectsRes.error
   if (subsRes.error) throw subsRes.error
 
-  const clientCounts = new Map<string, number>()
-  for (const row of clientsRes.data ?? []) {
-    clientCounts.set(row.user_id, (clientCounts.get(row.user_id) ?? 0) + 1)
-  }
-  const projectCounts = new Map<string, number>()
-  for (const row of projectsRes.data ?? []) {
-    projectCounts.set(row.user_id, (projectCounts.get(row.user_id) ?? 0) + 1)
-  }
   const revenue = new Map<string, number>()
   for (const row of subsRes.data ?? []) {
     if (row.status !== 'approved') continue
@@ -29,8 +17,6 @@ export async function listUsers(): Promise<AdminUserRow[]> {
 
   return (profilesRes.data ?? []).map((p) => ({
     ...p,
-    client_count: clientCounts.get(p.id) ?? 0,
-    project_count: projectCounts.get(p.id) ?? 0,
     revenue: revenue.get(p.id) ?? 0,
   })) as AdminUserRow[]
 }

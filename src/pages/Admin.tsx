@@ -161,7 +161,6 @@ export default function Admin() {
                 <th className="px-4 py-2">{t('admin.user')}</th>
                 <th className="px-4 py-2">{t('admin.role')}</th>
                 <th className="px-4 py-2">{t('admin.plan')}</th>
-                <th className="px-4 py-2">{t('admin.usage')}</th>
                 <th className="px-4 py-2">{t('admin.revenue')}</th>
                 <th className="px-4 py-2">{t('admin.joined')}</th>
               </tr>
@@ -195,9 +194,6 @@ export default function Admin() {
                       ))}
                     </select>
                   </td>
-                  <td className="px-4 py-2 text-xs text-muted-foreground">
-                    {u.client_count} / {u.project_count}
-                  </td>
                   <td className="px-4 py-2">{formatCurrency(u.revenue, currency, lang)}</td>
                   <td className="px-4 py-2 text-xs text-muted-foreground">
                     {formatDate(u.created_at, lang)}
@@ -206,7 +202,7 @@ export default function Admin() {
               ))}
               {!loading && users.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-6 text-center text-sm text-muted-foreground">
+                  <td colSpan={5} className="px-4 py-6 text-center text-sm text-muted-foreground">
                     {t('admin.noUsers')}
                   </td>
                 </tr>

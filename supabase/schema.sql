@@ -222,41 +222,37 @@ drop policy if exists profiles_admin_all on public.profiles;
 create policy profiles_admin_all on public.profiles
   for all using (public.is_admin()) with check (public.is_admin());
 
--- user_settings
+-- user_settings (private: owner only, no admin access)
 drop policy if exists settings_owner_all on public.user_settings;
 create policy settings_owner_all on public.user_settings
   for all using (id = auth.uid()) with check (id = auth.uid());
 
+-- Removed for privacy: admins must NOT read other users' settings.
 drop policy if exists settings_admin_read on public.user_settings;
-create policy settings_admin_read on public.user_settings
-  for select using (public.is_admin());
 
 -- clients
 drop policy if exists clients_owner_all on public.clients;
 create policy clients_owner_all on public.clients
   for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 
+-- Owners only: admins cannot read other users' clients.
 drop policy if exists clients_admin_read on public.clients;
-create policy clients_admin_read on public.clients
-  for select using (public.is_admin());
 
 -- projects
 drop policy if exists projects_owner_all on public.projects;
 create policy projects_owner_all on public.projects
   for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 
+-- Owners only: admins cannot read other users' projects.
 drop policy if exists projects_admin_read on public.projects;
-create policy projects_admin_read on public.projects
-  for select using (public.is_admin());
 
 -- project_payments
 drop policy if exists payments_owner_all on public.project_payments;
 create policy payments_owner_all on public.project_payments
   for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 
+-- Owners only: admins cannot read other users' payments.
 drop policy if exists payments_admin_read on public.project_payments;
-create policy payments_admin_read on public.project_payments
-  for select using (public.is_admin());
 
 -- subscriptions
 drop policy if exists subs_owner_insert on public.subscriptions;

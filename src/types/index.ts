@@ -111,7 +111,5 @@ export interface UserSettings {
 }
 
 export interface AdminUserRow extends UserProfile {
-  project_count: number
-  client_count: number
   revenue: number
 }
