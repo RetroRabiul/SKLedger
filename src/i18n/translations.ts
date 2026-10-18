@@ -46,6 +46,8 @@ export const messages = {
   'common.deleted': { en: 'Deleted', bn: 'মুছে ফেলা হয়েছে' },
   'common.error': { en: 'Something went wrong', bn: 'কিছু ভুল হয়েছে' },
   'common.of': { en: 'of', bn: '/' },
+  'common.previous': { en: 'Previous', bn: 'পূর্ববর্তী' },
+  'common.next': { en: 'Next', bn: 'পরবর্তী' },
   'common.currency': { en: 'Currency', bn: 'মুদ্রা' },
   'common.language': { en: 'Language', bn: 'ভাষা' },
   'common.theme': { en: 'Theme', bn: 'থিম' },

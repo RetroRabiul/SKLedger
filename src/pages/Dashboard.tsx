@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Briefcase, Clock, DollarSign, Lock, TrendingUp, Users } from 'lucide-react'
+import { Briefcase, ChevronLeft, ChevronRight, Clock, DollarSign, Lock, TrendingUp, Users } from 'lucide-react'
 import { getClients } from '../services/clients'
 import { getProjects } from '../services/projects'
 import { getAllPayments } from '../services/payments'
@@ -46,6 +46,7 @@ export default function Dashboard() {
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [range, setRange] = useState<'month' | 'week'>('month')
+  const [offset, setOffset] = useState(0)
 
   useEffect(() => {
     let mounted = true
@@ -81,7 +82,7 @@ export default function Dashboard() {
 
     const months: ChartPoint[] = []
     for (let i = 5; i >= 0; i -= 1) {
-      const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const date = new Date(now.getFullYear(), now.getMonth() - i - offset, 1)
       const label = new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-GB', {
         month: 'short',
       }).format(date)
@@ -98,7 +99,7 @@ export default function Dashboard() {
     const weeks: ChartPoint[] = []
     for (let i = 7; i >= 0; i -= 1) {
       const start = new Date(weekStart)
-      start.setDate(start.getDate() - i * 7)
+      start.setDate(start.getDate() - (i + offset) * 7)
       const end = new Date(start)
       end.setDate(end.getDate() + 7)
       const label = new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-GB', {
@@ -125,7 +126,7 @@ export default function Dashboard() {
       .slice(0, 5)
 
     return { totalReceived, pending, active, monthly, months, weeks, upcoming }
-  }, [projects, payments, lang])
+  }, [projects, payments, lang, offset])
 
   const cards = [
     { label: t('dashboard.monthlyRevenue'), value: formatCurrency(stats.monthly, currency, lang), icon: DollarSign },
@@ -162,21 +163,45 @@ export default function Dashboard() {
           <div className="mb-4 flex items-center justify-between gap-3">
             <h3 className="text-lg font-semibold">{t('dashboard.revenueChart')}</h3>
             {can('analytics') && (
-              <div className="flex rounded-md border p-0.5 text-xs font-medium">
-                {(['month', 'week'] as const).map((option) => (
+              <div className="flex items-center gap-2">
+                <div className="flex rounded-md border p-0.5 text-xs font-medium">
+                  {(['month', 'week'] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        setRange(option)
+                        setOffset(0)
+                      }}
+                      className={`rounded px-3 py-1 transition-colors ${
+                        range === option
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-accent'
+                      }`}
+                    >
+                      {t(`dashboard.${option}`)}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center rounded-md border">
                   <button
-                    key={option}
                     type="button"
-                    onClick={() => setRange(option)}
-                    className={`rounded px-3 py-1 transition-colors ${
-                      range === option
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-accent'
-                    }`}
+                    title={t('common.previous')}
+                    onClick={() => setOffset((o) => o + 1)}
+                    className="rounded-l-md p-1.5 text-muted-foreground hover:bg-accent"
                   >
-                    {t(`dashboard.${option}`)}
+                    <ChevronLeft className="h-4 w-4" />
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    title={t('common.next')}
+                    onClick={() => setOffset((o) => Math.max(0, o - 1))}
+                    disabled={offset === 0}
+                    className="rounded-r-md border-l p-1.5 text-muted-foreground hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             )}
           </div>
