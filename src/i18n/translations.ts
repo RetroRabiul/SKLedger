@@ -145,7 +145,9 @@ export const messages = {
   'dashboard.recentProjects': { en: 'Recent projects', bn: 'সাম্প্রতিক প্রজেক্ট' },
   'dashboard.noActive': { en: 'No active projects yet.', bn: 'এখনো চলমান প্রজেক্ট নেই।' },
   'dashboard.noRecent': { en: 'No recent projects yet.', bn: 'সাম্প্রতিক কোনো প্রজেক্ট নেই।' },
-  'dashboard.revenueChart': { en: 'Revenue (last 6 months)', bn: 'আয় (শেষ ৬ মাস)' },
+  'dashboard.revenueChart': { en: 'Revenue', bn: 'আয়' },
+  'dashboard.month': { en: 'Month', bn: 'মাস' },
+  'dashboard.week': { en: 'Week', bn: 'সপ্তাহ' },
   'dashboard.analyticsLocked': {
     en: 'Analytics is available on Pro and Business plans.',
     bn: 'অ্যানালিটিক্স Pro ও Business প্ল্যানে পাওয়া যায়।',

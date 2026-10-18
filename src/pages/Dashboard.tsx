@@ -19,9 +19,16 @@ import { useProfile } from '../hooks/useProfile'
 import { formatCurrency } from '../utils/format'
 import { describeTimeLeft, getUrgency } from '../lib/deadlineNotifications'
 
-interface MonthPoint {
-  month: string
+interface ChartPoint {
+  label: string
   amount: number
+}
+
+function startOfWeek(date: Date): Date {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const diff = (d.getDay() + 6) % 7
+  d.setDate(d.getDate() - diff)
+  return d
 }
 
 function paidFor(project: Project, payments: Payment[]): number {
@@ -38,6 +45,7 @@ export default function Dashboard() {
   const [projects, setProjects] = useState<Project[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
+  const [range, setRange] = useState<'month' | 'week'>('month')
 
   useEffect(() => {
     let mounted = true
@@ -71,10 +79,10 @@ export default function Dashboard() {
       })
       .reduce((sum, p) => sum + Number(p.amount || 0), 0)
 
-    const months: MonthPoint[] = []
+    const months: ChartPoint[] = []
     for (let i = 5; i >= 0; i -= 1) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
-      const label = new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-US', {
+      const label = new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-GB', {
         month: 'short',
       }).format(date)
       const amount = payments
@@ -83,7 +91,27 @@ export default function Dashboard() {
           return d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth()
         })
         .reduce((sum, p) => sum + Number(p.amount || 0), 0)
-      months.push({ month: label, amount })
+      months.push({ label, amount })
+    }
+
+    const weekStart = startOfWeek(now)
+    const weeks: ChartPoint[] = []
+    for (let i = 7; i >= 0; i -= 1) {
+      const start = new Date(weekStart)
+      start.setDate(start.getDate() - i * 7)
+      const end = new Date(start)
+      end.setDate(end.getDate() + 7)
+      const label = new Intl.DateTimeFormat(lang === 'bn' ? 'bn-BD' : 'en-GB', {
+        day: 'numeric',
+        month: 'short',
+      }).format(start)
+      const amount = payments
+        .filter((p) => {
+          const d = new Date(p.payment_date)
+          return d >= start && d < end
+        })
+        .reduce((sum, p) => sum + Number(p.amount || 0), 0)
+      weeks.push({ label, amount })
     }
 
     const upcoming = active
@@ -96,7 +124,7 @@ export default function Dashboard() {
       .sort((a, b) => a.hoursLeft - b.hoursLeft)
       .slice(0, 5)
 
-    return { totalReceived, pending, active, monthly, months, upcoming }
+    return { totalReceived, pending, active, monthly, months, weeks, upcoming }
   }, [projects, payments, lang])
 
   const cards = [
@@ -131,13 +159,33 @@ export default function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-lg border bg-card p-5">
-          <h3 className="mb-4 text-lg font-semibold">{t('dashboard.revenueChart')}</h3>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h3 className="text-lg font-semibold">{t('dashboard.revenueChart')}</h3>
+            {can('analytics') && (
+              <div className="flex rounded-md border p-0.5 text-xs font-medium">
+                {(['month', 'week'] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setRange(option)}
+                    className={`rounded px-3 py-1 transition-colors ${
+                      range === option
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-accent'
+                    }`}
+                  >
+                    {t(`dashboard.${option}`)}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {can('analytics') ? (
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.months}>
+                <BarChart data={range === 'week' ? stats.weeks : stats.months}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                  <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} width={60} />
                   <Tooltip
                     contentStyle={{
