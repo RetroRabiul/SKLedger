@@ -24,8 +24,17 @@ export async function uploadProof(file: File): Promise<string> {
   })
   if (error) throw error
 
-  const { data } = supabase.storage.from('payment-proofs').getPublicUrl(path)
-  return data.publicUrl
+  return path
+}
+
+/** Resolve a stored proof reference to a viewable URL (signed for private paths). */
+export async function getProofUrl(reference: string): Promise<string> {
+  if (/^https?:\/\//i.test(reference)) return reference
+  const { data, error } = await supabase.storage
+    .from('payment-proofs')
+    .createSignedUrl(reference, 3600)
+  if (error) throw error
+  return data.signedUrl
 }
 
 export async function requestUpgrade(payload: NewSubscription): Promise<Subscription> {

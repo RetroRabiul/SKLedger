@@ -10,6 +10,7 @@ import {
 } from '../services/admin'
 import { PLAN_ORDER } from '../config/plans'
 import type { AdminUserRow, PlanId } from '../types'
+import { getProofUrl } from '../services/subscriptions'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
 import { formatCurrency, formatDate } from '../utils/format'
@@ -66,6 +67,15 @@ export default function Admin() {
     }
   }
 
+  const handleOpenProof = async (reference: string) => {
+    try {
+      const url = await getProofUrl(reference)
+      window.open(url, '_blank', 'noopener')
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    }
+  }
+
   const cards = [
     { label: t('admin.totalUsers'), value: String(users.length), icon: Users },
     { label: t('admin.paidUsers'), value: String(stats.paidUsers), icon: Wallet },
@@ -117,15 +127,13 @@ export default function Admin() {
                       {s.transaction_id ?? '—'}
                     </p>
                     {s.proof_url && (
-                      <a
-                        href={s.proof_url}
-                        target="_blank"
-                        rel="noreferrer"
+                      <button
+                        onClick={() => handleOpenProof(s.proof_url as string)}
                         className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
                       >
                         <ExternalLink className="h-3 w-3" />
                         {t('admin.viewProof')}
-                      </a>
+                      </button>
                     )}
                   </div>
                   <div className="flex gap-2">

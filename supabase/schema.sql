@@ -337,17 +337,26 @@ create trigger projects_touch before update on public.projects
 -- Storage: payment proof screenshots
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (id, name, public)
-values ('payment-proofs', 'payment-proofs', true)
-on conflict (id) do nothing;
+values ('payment-proofs', 'payment-proofs', false)
+on conflict (id) do update set public = false;
 
+-- Users may upload proofs only into their own folder (path = <user_id>/<file>).
 drop policy if exists proof_upload on storage.objects;
 create policy proof_upload on storage.objects
   for insert to authenticated
-  with check (bucket_id = 'payment-proofs');
+  with check (
+    bucket_id = 'payment-proofs'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
 
+-- Only the owning user or an admin can read a proof, via signed URLs.
 drop policy if exists proof_read on storage.objects;
 create policy proof_read on storage.objects
-  for select using (bucket_id = 'payment-proofs');
+  for select to authenticated
+  using (
+    bucket_id = 'payment-proofs'
+    and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin())
+  );
 
 -- ---------------------------------------------------------------------------
 -- Seed owner profile as admin (in case the trigger missed an existing row)
