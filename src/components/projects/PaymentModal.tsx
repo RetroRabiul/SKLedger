@@ -101,7 +101,7 @@ export default function PaymentModal({ open, onClose, project, onChanged }: Prop
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
           <label className="block">
@@ -111,7 +111,7 @@ export default function PaymentModal({ open, onClose, project, onChanged }: Prop
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value as PaymentMethod)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             >
               {METHODS.map((m) => (
                 <option key={m} value={m}>
@@ -130,7 +130,7 @@ export default function PaymentModal({ open, onClose, project, onChanged }: Prop
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
           <label className="block">
@@ -140,7 +140,7 @@ export default function PaymentModal({ open, onClose, project, onChanged }: Prop
             <input
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
         </div>
@@ -154,13 +154,18 @@ export default function PaymentModal({ open, onClose, project, onChanged }: Prop
 
         <div className="space-y-2 border-t pt-3">
           {payments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t('payments.none')}</p>
+            <p className="py-4 text-center text-sm text-muted-foreground">{t('payments.none')}</p>
           ) : (
             payments.map((p) => (
-              <div key={p.id} className="flex items-center justify-between gap-3 text-sm">
-                <span>{formatDate(p.payment_date, lang)}</span>
-                <span className="text-muted-foreground">{p.method}</span>
-                <span className="font-medium">{formatCurrency(p.amount, currency, lang)}</span>
+              <div
+                key={p.id}
+                className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm"
+              >
+                <span className="text-muted-foreground">{formatDate(p.payment_date, lang)}</span>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{p.method}</span>
+                <span className="ml-auto font-medium">
+                  {formatCurrency(p.amount, currency, lang)}
+                </span>
                 <button
                   onClick={() => handleDelete(p.id)}
                   className="rounded-md p-1.5 text-muted-foreground hover:bg-accent"

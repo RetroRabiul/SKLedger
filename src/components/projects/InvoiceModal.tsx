@@ -46,16 +46,15 @@ export default function InvoiceModal({ open, onClose, project, payments }: Props
       }
     >
       <div className="invoice-print-area space-y-6 text-sm">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              {logoUrl && <img src={logoUrl} alt={brandName} className="h-10 w-10 rounded object-contain" />}
-              <h2 className="text-xl font-bold">{brandName}</h2>
-            </div>
-            <p className="text-muted-foreground">{brandName}</p>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {logoUrl && (
+              <img src={logoUrl} alt={brandName} className="h-10 w-10 rounded object-contain" />
+            )}
+            <h2 className="text-xl font-bold tracking-tight">{brandName}</h2>
           </div>
           <div className="text-right">
-            <p className="font-semibold">{t('invoice.title')}</p>
+            <p className="font-semibold uppercase tracking-wide">{t('invoice.title')}</p>
             <p className="text-muted-foreground">
               {t('invoice.date')}: {formatDate(project.created_at, lang)}
             </p>
@@ -69,18 +68,18 @@ export default function InvoiceModal({ open, onClose, project, payments }: Props
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs uppercase text-muted-foreground">{t('invoice.to')}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t('invoice.to')}</p>
             <p className="font-medium">{project.clients?.name ?? '—'}</p>
           </div>
           <div>
-            <p className="text-xs uppercase text-muted-foreground">{t('common.status')}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t('common.status')}</p>
             <p className="font-medium">{t(`status.${project.status}`)}</p>
           </div>
         </div>
 
         <table className="w-full border-t">
           <thead>
-            <tr className="text-left text-xs uppercase text-muted-foreground">
+            <tr className="text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
               <th className="py-2">{t('projects.titleLabel')}</th>
               <th className="py-2 text-right">{t('common.amount')}</th>
             </tr>
@@ -93,7 +92,7 @@ export default function InvoiceModal({ open, onClose, project, payments }: Props
           </tbody>
         </table>
 
-        <div className="ml-auto max-w-xs space-y-1 border-t pt-3">
+        <div className="ml-auto max-w-xs space-y-1 rounded-lg border bg-muted/40 p-3">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('invoice.subtotal')}</span>
             <span>{formatCurrency(project.amount, currency, lang)}</span>

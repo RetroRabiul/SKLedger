@@ -148,7 +148,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
           />
         </label>
 
@@ -160,7 +160,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
             <select
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             >
               <option value="">{t('projects.noClient')}</option>
               {clients.map((c) => (
@@ -177,7 +177,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             >
               {PROJECT_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -197,7 +197,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
           <label className="block">
@@ -208,7 +208,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
               type="number"
               value={advance}
               onChange={(e) => setAdvance(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
           <label className="block">
@@ -218,7 +218,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as ProjectStatus)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             >
               {STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -238,7 +238,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
           <label className="block">
@@ -249,19 +249,19 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
             />
           </label>
         </div>
 
-        <div className="rounded-lg border p-3">
+        <div className="rounded-lg border bg-muted/40 p-3">
           <div className="mb-2 flex items-center justify-between gap-2">
             <span className="text-sm font-medium">{t('projects.services')}</span>
             {can('checklistPresets') ? (
               <select
                 value=""
                 onChange={(e) => applyPreset(e.target.value)}
-                className="rounded-md border bg-background px-2 py-1 text-xs"
+                className="rounded-lg border bg-background px-2 py-1 text-xs"
               >
                 <option value="">{t('projects.applyPreset')}</option>
                 {SERVICE_PRESETS.map((p) => (
@@ -286,7 +286,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
                       prev.map((s, i) => (i === index ? { ...s, completed: e.target.checked } : s))
                     )
                   }
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-primary"
                 />
                 <input
                   value={service.name}
@@ -296,7 +296,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
                     )
                   }
                   placeholder={t('projects.servicePlaceholder')}
-                  className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm"
+                  className="flex-1 rounded-lg border bg-background px-3 py-1.5 text-sm"
                 />
                 <button
                   onClick={() => setServices((prev) => prev.filter((_, i) => i !== index))}
@@ -324,7 +324,7 @@ export default function ProjectFormModal({ open, onClose, project, clients, onSa
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
           />
         </label>
       </div>

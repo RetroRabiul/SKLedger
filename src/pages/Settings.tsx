@@ -426,7 +426,7 @@ export default function Settings() {
                 type="checkbox"
                 checked={notify.enabled}
                 onChange={(e) => void handleNotifyToggle(e.target.checked)}
-                className="h-4 w-4"
+                className="h-4 w-4 accent-primary"
               />
               <span className="text-sm">{t('notify.enable')}</span>
             </label>
