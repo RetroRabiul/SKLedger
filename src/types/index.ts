@@ -111,6 +111,19 @@ export interface UserSettings {
   updated_at?: string
 }
 
+export interface PaymentChannel {
+  id: string
+  label: string
+  value: string
+}
+
+export interface AppSettings {
+  id: number
+  payment_methods: PaymentChannel[]
+  payment_note?: string | null
+  updated_at?: string
+}
+
 export interface AdminUserRow extends UserProfile {
   revenue: number
 }

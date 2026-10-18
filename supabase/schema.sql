@@ -204,6 +204,21 @@ create index if not exists subscriptions_user_id_idx on public.subscriptions (us
 create index if not exists subscriptions_status_idx on public.subscriptions (status);
 
 -- ---------------------------------------------------------------------------
+-- app_settings  (single-row global settings: admin-managed payment details)
+-- ---------------------------------------------------------------------------
+create table if not exists public.app_settings (
+  id              integer primary key check (id = 1),
+  payment_methods jsonb not null default '[]'::jsonb,  -- [{ id, label, value }]
+  payment_note    text,
+  updated_at      timestamptz not null default now()
+);
+
+alter table public.app_settings add column if not exists payment_methods jsonb not null default '[]'::jsonb;
+alter table public.app_settings add column if not exists payment_note text;
+
+insert into public.app_settings (id) values (1) on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- ---------------------------------------------------------------------------
 alter table public.profiles         enable row level security;
@@ -212,6 +227,7 @@ alter table public.clients          enable row level security;
 alter table public.projects         enable row level security;
 alter table public.project_payments enable row level security;
 alter table public.subscriptions    enable row level security;
+alter table public.app_settings     enable row level security;
 
 -- profiles
 drop policy if exists profiles_select on public.profiles;
@@ -269,6 +285,15 @@ create policy subs_owner_read on public.subscriptions
 
 drop policy if exists subs_admin_all on public.subscriptions;
 create policy subs_admin_all on public.subscriptions
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- app_settings (everyone signed-in can read; only admin can change)
+drop policy if exists appsettings_read on public.app_settings;
+create policy appsettings_read on public.app_settings
+  for select to authenticated using (true);
+
+drop policy if exists appsettings_admin_all on public.app_settings;
+create policy appsettings_admin_all on public.app_settings
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- ---------------------------------------------------------------------------
@@ -335,6 +360,10 @@ create trigger clients_touch before update on public.clients
 
 drop trigger if exists projects_touch on public.projects;
 create trigger projects_touch before update on public.projects
+  for each row execute function public.set_updated_at();
+
+drop trigger if exists appsettings_touch on public.app_settings;
+create trigger appsettings_touch before update on public.app_settings
   for each row execute function public.set_updated_at();
 
 -- ---------------------------------------------------------------------------

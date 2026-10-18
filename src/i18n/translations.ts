@@ -334,6 +334,19 @@ export const messages = {
   'admin.requestedPlan': { en: 'Requested plan', bn: 'অনুরোধকৃত প্ল্যান' },
   'admin.adminBadge': { en: 'Admin', bn: 'অ্যাডমিন' },
   'admin.recentPayments': { en: 'Recent approved payments', bn: 'সাম্প্রতিক অনুমোদিত পেমেন্ট' },
+  'admin.paymentDetails': { en: 'Payment details', bn: 'পেমেন্টের বিবরণ' },
+  'admin.paymentDetailsHint': {
+    en: 'These details are shown to users when they choose a plan to upgrade.',
+    bn: 'ব্যবহারকারী প্ল্যান আপগ্রেড করতে বেছে নিলে এই বিবরণ দেখানো হয়।',
+  },
+  'admin.methodLabel': { en: 'Method (e.g. bKash)', bn: 'মাধ্যম (যেমন bKash)' },
+  'admin.methodValue': { en: 'Number / account details', bn: 'নম্বর / অ্যাকাউন্ট বিবরণ' },
+  'admin.addMethod': { en: 'Add method', bn: 'মাধ্যম যোগ করুন' },
+  'admin.paymentNote': { en: 'Note (optional)', bn: 'নোট (ঐচ্ছিক)' },
+  'admin.paymentNotePlaceholder': {
+    en: 'Extra instructions, e.g. send money and share the screenshot.',
+    bn: 'অতিরিক্ত নির্দেশনা, যেমন সেন্ড মানি করে স্ক্রিনশট পাঠান।',
+  },
 
   // upgrade ----------------------------------------------------------------
   'upgrade.title': { en: 'Upgrade your plan', bn: 'প্ল্যান আপগ্রেড করুন' },
@@ -352,6 +365,7 @@ export const messages = {
   'upgrade.pendingNotice': { en: 'You have a payment awaiting approval.', bn: 'আপনার একটি পেমেন্ট অনুমোদনের অপেক্ষায়।' },
   'upgrade.lockedFeature': { en: '{feature} is available on Pro and Business.', bn: '{feature} Pro ও Business প্ল্যানে পাওয়া যায়।' },
   'upgrade.myPayments': { en: 'My payments', bn: 'আমার পেমেন্ট' },
+  'upgrade.payTo': { en: 'Send payment to', bn: 'পেমেন্ট পাঠান' },
 
   // plan -------------------------------------------------------------------
   'plan.free': { en: 'Free', bn: 'ফ্রি' },
@@ -372,6 +386,7 @@ export const messages = {
   // toasts -----------------------------------------------------------------
   'toast.clientAdded': { en: 'Client added', bn: 'ক্লায়েন্ট যোগ হয়েছে' },
   'toast.clientUpdated': { en: 'Client updated', bn: 'ক্লায়েন্ট আপডেট হয়েছে' },
+  'toast.saved': { en: 'Saved', bn: 'সংরক্ষিত হয়েছে' },
   'toast.clientDeleted': { en: 'Client deleted', bn: 'ক্লায়েন্ট মুছে ফেলা হয়েছে' },
   'toast.projectAdded': { en: 'Project added', bn: 'প্রজেক্ট যোগ হয়েছে' },
   'toast.projectUpdated': { en: 'Project updated', bn: 'প্রজেক্ট আপডেট হয়েছে' },

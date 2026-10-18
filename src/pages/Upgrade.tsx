@@ -4,7 +4,8 @@ import { toast } from 'sonner'
 import Modal from '../components/ui/Modal'
 import { PLANS } from '../config/plans'
 import { getMySubscriptions, requestUpgrade, uploadProof } from '../services/subscriptions'
-import type { PlanId, Subscription } from '../types'
+import { getAppSettings } from '../services/appSettings'
+import type { AppSettings, PlanId, Subscription } from '../types'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
 import { formatCurrency, formatDate } from '../utils/format'
@@ -21,6 +22,7 @@ export default function Upgrade() {
   const [txnId, setTxnId] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [app, setApp] = useState<AppSettings | null>(null)
 
   const load = () => {
     getMySubscriptions()
@@ -30,7 +32,22 @@ export default function Upgrade() {
 
   useEffect(() => {
     load()
+    getAppSettings()
+      .then((settings) => {
+        setApp(settings)
+        const first = settings?.payment_methods?.[0]
+        if (first?.label) setMethod(first.label)
+      })
+      .catch((error) => console.error(error))
   }, [])
+
+  const methodOptions = app?.payment_methods?.length
+    ? app.payment_methods.map((m) => m.label)
+    : METHODS
+
+  const hasPaymentInfo = Boolean(
+    app && (app.payment_methods.length > 0 || app.payment_note?.trim()),
+  )
 
   const pending = subs.find((s) => s.status === 'pending')
 
@@ -187,6 +204,22 @@ export default function Upgrade() {
         }
       >
         <div className="space-y-3">
+          {hasPaymentInfo && (
+            <div className="rounded-md border bg-muted/40 p-3 text-xs">
+              <p className="mb-1.5 font-semibold">{t('upgrade.payTo')}</p>
+              <ul className="space-y-1">
+                {app?.payment_methods.map((m) => (
+                  <li key={m.id} className="flex items-center justify-between gap-3">
+                    <span className="text-muted-foreground">{m.label}</span>
+                    <span className="font-medium">{m.value}</span>
+                  </li>
+                ))}
+              </ul>
+              {app?.payment_note && (
+                <p className="mt-2 whitespace-pre-line text-muted-foreground">{app.payment_note}</p>
+              )}
+            </div>
+          )}
           {target && (
             <p className="text-sm text-muted-foreground">
               {t('common.amount')}: <strong>৳{PLANS[target].priceBdt}</strong>
@@ -201,7 +234,7 @@ export default function Upgrade() {
               onChange={(e) => setMethod(e.target.value)}
               className="w-full rounded-md border bg-background px-3 py-2 text-sm"
             >
-              {METHODS.map((m) => (
+              {methodOptions.map((m) => (
                 <option key={m} value={m}>
                   {m}
                 </option>

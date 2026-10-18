@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Check, ExternalLink, Users, Wallet, Clock, X } from 'lucide-react'
+import { Check, ExternalLink, Plus, Trash2, Users, Wallet, Clock, X } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   adminSetPlan,
@@ -8,8 +8,9 @@ import {
   reviewSubscription,
   type AdminSubscriptionRow,
 } from '../services/admin'
+import { getAppSettings, savePaymentDetails } from '../services/appSettings'
 import { PLAN_ORDER } from '../config/plans'
-import type { AdminUserRow, PlanId } from '../types'
+import type { AdminUserRow, PaymentChannel, PlanId } from '../types'
 import { getProofUrl } from '../services/subscriptions'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
@@ -21,13 +22,18 @@ export default function Admin() {
   const [users, setUsers] = useState<AdminUserRow[]>([])
   const [subs, setSubs] = useState<AdminSubscriptionRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [methods, setMethods] = useState<PaymentChannel[]>([])
+  const [note, setNote] = useState('')
+  const [savingPayment, setSavingPayment] = useState(false)
 
   const load = () => {
     setLoading(true)
-    Promise.all([listUsers(), listSubscriptions()])
-      .then(([u, s]) => {
+    Promise.all([listUsers(), listSubscriptions(), getAppSettings()])
+      .then(([u, s, app]) => {
         setUsers(u)
         setSubs(s)
+        setMethods(app?.payment_methods ?? [])
+        setNote(app?.payment_note ?? '')
       })
       .catch((error) => toast.error((error as Error).message ?? t('common.error')))
       .finally(() => setLoading(false))
@@ -73,6 +79,29 @@ export default function Admin() {
       window.open(url, '_blank', 'noopener')
     } catch (error) {
       toast.error((error as Error).message ?? t('common.error'))
+    }
+  }
+
+  const addMethod = () =>
+    setMethods((prev) => [...prev, { id: crypto.randomUUID(), label: '', value: '' }])
+
+  const updateMethod = (id: string, key: 'label' | 'value', value: string) =>
+    setMethods((prev) => prev.map((m) => (m.id === id ? { ...m, [key]: value } : m)))
+
+  const removeMethod = (id: string) =>
+    setMethods((prev) => prev.filter((m) => m.id !== id))
+
+  const handleSavePayment = async () => {
+    setSavingPayment(true)
+    try {
+      const cleaned = methods.filter((m) => m.label.trim() || m.value.trim())
+      await savePaymentDetails(cleaned, note.trim() || null)
+      toast.success(t('toast.saved'))
+      load()
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    } finally {
+      setSavingPayment(false)
     }
   }
 
@@ -157,6 +186,68 @@ export default function Admin() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* Payment details shown on the upgrade page */}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">{t('admin.paymentDetails')}</h2>
+        <div className="space-y-4 rounded-lg border bg-card p-5">
+          <p className="text-xs text-muted-foreground">{t('admin.paymentDetailsHint')}</p>
+
+          <div className="space-y-2">
+            {methods.map((m) => (
+              <div key={m.id} className="flex flex-wrap items-center gap-2">
+                <input
+                  value={m.label}
+                  onChange={(e) => updateMethod(m.id, 'label', e.target.value)}
+                  placeholder={t('admin.methodLabel')}
+                  className="w-40 rounded-md border bg-background px-3 py-2 text-sm"
+                />
+                <input
+                  value={m.value}
+                  onChange={(e) => updateMethod(m.id, 'value', e.target.value)}
+                  placeholder={t('admin.methodValue')}
+                  className="min-w-[12rem] flex-1 rounded-md border bg-background px-3 py-2 text-sm"
+                />
+                <button
+                  onClick={() => removeMethod(m.id)}
+                  className="rounded-md border p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+                  aria-label={t('common.delete')}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={addMethod}
+              className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm hover:bg-accent"
+            >
+              <Plus className="h-4 w-4" />
+              {t('admin.addMethod')}
+            </button>
+          </div>
+
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-muted-foreground">
+              {t('admin.paymentNote')}
+            </span>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={3}
+              placeholder={t('admin.paymentNotePlaceholder')}
+              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            />
+          </label>
+
+          <button
+            onClick={() => void handleSavePayment()}
+            disabled={savingPayment}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          >
+            {t('common.save')}
+          </button>
+        </div>
       </section>
 
       {/* Users */}
