@@ -28,11 +28,18 @@ export async function uploadProof(file: File): Promise<string> {
 }
 
 /** Resolve a stored proof reference to a viewable URL (signed for private paths). */
+/** Resolve a stored proof reference to a viewable URL (signed for private paths). */
 export async function getProofUrl(reference: string): Promise<string> {
-  if (/^https?:\/\//i.test(reference)) return reference
+  let path = reference
+  if (/^https?:\/\//i.test(reference)) {
+    const marker = '/payment-proofs/'
+    const idx = reference.indexOf(marker)
+    if (idx === -1) return reference
+    path = reference.slice(idx + marker.length).split('?')[0]
+  }
   const { data, error } = await supabase.storage
     .from('payment-proofs')
-    .createSignedUrl(reference, 3600)
+    .createSignedUrl(decodeURIComponent(path), 3600)
   if (error) throw error
   return data.signedUrl
 }
