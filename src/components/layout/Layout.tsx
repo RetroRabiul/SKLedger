@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -12,6 +13,8 @@ import { useAuth } from '../../hooks/useAuth'
 import { useI18n } from '../../hooks/useI18n'
 import { useProfile } from '../../hooks/useProfile'
 import { useDeadlineNotifications } from '../../hooks/useDeadlineNotifications'
+import { DEFAULT_BRANDING, getBranding } from '../../services/branding'
+import type { AppBranding } from '../../types'
 import NotificationBell from './NotificationBell'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -28,7 +31,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth()
   const { t } = useI18n()
   const { isAdmin, plan, brandName, logoUrl } = useProfile()
+  const [brand, setBrand] = useState<AppBranding>(DEFAULT_BRANDING)
   useDeadlineNotifications()
+
+  useEffect(() => {
+    getBranding()
+      .then(setBrand)
+      .catch((error) => console.error(error))
+  }, [])
+
+  const displayLogo = logoUrl ?? brand.logo_url
+  const displayName = brandName === DEFAULT_BRANDING.brand_name ? brand.brand_name : brandName
 
   const items = [
     { to: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
@@ -44,16 +57,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4">
           <div className="flex min-w-0 items-center gap-6">
             <NavLink to="/dashboard" className="flex min-w-0 items-center gap-2">
-              {logoUrl ? (
+              {displayLogo ? (
                 <img
-                  src={logoUrl}
-                  alt={brandName}
+                  src={displayLogo}
+                  alt={displayName}
                   className="h-7 w-7 shrink-0 rounded object-cover"
                 />
               ) : (
                 <Briefcase className="h-6 w-6 shrink-0 text-primary" />
               )}
-              <span className="truncate text-base font-bold sm:text-lg">{brandName}</span>
+              <span className="truncate text-base font-bold sm:text-lg">{displayName}</span>
             </NavLink>
             <div className="hidden items-center gap-6 sm:flex">
               {items.map((item) => (
