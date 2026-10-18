@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Check, ExternalLink, Plus, Trash2, Users, Wallet, Clock, X } from 'lucide-react'
+import { Check, ExternalLink, Megaphone, Plus, Trash2, Users, Wallet, Clock, X } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   adminSetPlan,
@@ -9,8 +9,9 @@ import {
   type AdminSubscriptionRow,
 } from '../services/admin'
 import { getAppSettings, savePaymentDetails } from '../services/appSettings'
+import { createAnnouncement, deleteAnnouncement, listAnnouncements } from '../services/announcements'
 import { PLAN_ORDER } from '../config/plans'
-import type { AdminUserRow, PaymentChannel, PlanId } from '../types'
+import type { AdminUserRow, Announcement, PaymentChannel, PlanId } from '../types'
 import { getProofUrl } from '../services/subscriptions'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
@@ -28,15 +29,20 @@ export default function Admin() {
   const [note, setNote] = useState('')
   const [savingPayment, setSavingPayment] = useState(false)
   const [drafts, setDrafts] = useState<Record<string, { plan: PlanId; days: number }>>({})
+  const [announcements, setAnnouncements] = useState<Announcement[]>([])
+  const [newTitle, setNewTitle] = useState('')
+  const [newBody, setNewBody] = useState('')
+  const [publishing, setPublishing] = useState(false)
 
   const load = () => {
     setLoading(true)
-    Promise.all([listUsers(), listSubscriptions(), getAppSettings()])
-      .then(([u, s, app]) => {
+    Promise.all([listUsers(), listSubscriptions(), getAppSettings(), listAnnouncements()])
+      .then(([u, s, app, ann]) => {
         setUsers(u)
         setSubs(s)
         setMethods(app?.payment_methods ?? [])
         setNote(app?.payment_note ?? '')
+        setAnnouncements(ann)
       })
       .catch((error) => toast.error((error as Error).message ?? t('common.error')))
       .finally(() => setLoading(false))
@@ -110,6 +116,31 @@ export default function Admin() {
       toast.error((error as Error).message ?? t('common.error'))
     } finally {
       setSavingPayment(false)
+    }
+  }
+
+  const handlePublish = async () => {
+    if (!newTitle.trim()) return
+    setPublishing(true)
+    try {
+      await createAnnouncement(newTitle.trim(), newBody.trim())
+      toast.success(t('toast.announcementPublished'))
+      setNewTitle('')
+      setNewBody('')
+      load()
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    } finally {
+      setPublishing(false)
+    }
+  }
+
+  const handleDeleteAnnouncement = async (id: string) => {
+    try {
+      await deleteAnnouncement(id)
+      load()
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
     }
   }
 
@@ -255,6 +286,70 @@ export default function Admin() {
           >
             {t('common.save')}
           </button>
+        </div>
+      </section>
+
+      {/* Announcements */}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">{t('admin.announcements')}</h2>
+        <div className="space-y-4 rounded-lg border bg-card p-5">
+          <p className="text-xs text-muted-foreground">{t('admin.announcementHint')}</p>
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-muted-foreground">
+              {t('admin.announcementTitle')}
+            </span>
+            <input
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-muted-foreground">
+              {t('admin.announcementBody')}
+            </span>
+            <textarea
+              value={newBody}
+              onChange={(e) => setNewBody(e.target.value)}
+              rows={3}
+              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <button
+            onClick={() => void handlePublish()}
+            disabled={publishing || !newTitle.trim()}
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          >
+            <Megaphone className="h-4 w-4" />
+            {t('admin.publish')}
+          </button>
+
+          {announcements.length > 0 && (
+            <ul className="divide-y rounded-md border">
+              {announcements.map((a) => (
+                <li key={a.id} className="flex items-start justify-between gap-3 p-3">
+                  <div>
+                    <p className="text-sm font-medium">{a.title}</p>
+                    {a.body && (
+                      <p className="mt-0.5 whitespace-pre-line text-xs text-muted-foreground">
+                        {a.body}
+                      </p>
+                    )}
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      {formatDate(a.created_at, lang)}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => void handleDeleteAnnouncement(a.id)}
+                    className="rounded-md border p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+                    aria-label={t('common.delete')}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 

@@ -224,6 +224,18 @@ alter table public.app_settings add column if not exists payment_note text;
 insert into public.app_settings (id) values (1) on conflict (id) do nothing;
 
 -- ---------------------------------------------------------------------------
+-- announcements  (admin broadcasts shown in the in-app notification bell)
+-- ---------------------------------------------------------------------------
+create table if not exists public.announcements (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  body        text not null default '',
+  created_by  uuid references auth.users (id) on delete set null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists announcements_created_at_idx on public.announcements (created_at desc);
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- ---------------------------------------------------------------------------
 alter table public.profiles         enable row level security;
@@ -233,6 +245,7 @@ alter table public.projects         enable row level security;
 alter table public.project_payments enable row level security;
 alter table public.subscriptions    enable row level security;
 alter table public.app_settings     enable row level security;
+alter table public.announcements    enable row level security;
 
 -- profiles
 drop policy if exists profiles_select on public.profiles;
@@ -299,6 +312,15 @@ create policy appsettings_read on public.app_settings
 
 drop policy if exists appsettings_admin_all on public.app_settings;
 create policy appsettings_admin_all on public.app_settings
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- announcements (everyone reads; only admin writes)
+drop policy if exists announcements_read on public.announcements;
+create policy announcements_read on public.announcements
+  for select to authenticated using (true);
+
+drop policy if exists announcements_admin_all on public.announcements;
+create policy announcements_admin_all on public.announcements
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- ---------------------------------------------------------------------------

@@ -12,6 +12,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { useI18n } from '../../hooks/useI18n'
 import { useProfile } from '../../hooks/useProfile'
 import { useDeadlineNotifications } from '../../hooks/useDeadlineNotifications'
+import NotificationBell from './NotificationBell'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary ${
@@ -62,6 +63,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <NavLink
               to="/upgrade"
               className="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold hover:bg-accent"

@@ -125,6 +125,14 @@ export interface AppSettings {
   updated_at?: string
 }
 
+export interface Announcement {
+  id: string
+  title: string
+  body: string
+  created_by?: string | null
+  created_at: string
+}
+
 export interface AdminUserRow extends UserProfile {
   revenue: number
 }

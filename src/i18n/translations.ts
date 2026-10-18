@@ -64,6 +64,13 @@ export const messages = {
   'nav.settings': { en: 'Settings', bn: 'সেটিংস' },
   'nav.admin': { en: 'Admin', bn: 'অ্যাডমিন' },
 
+  // notifications ----------------------------------------------------------
+  'notif.title': { en: 'Notifications', bn: 'নোটিফিকেশন' },
+  'notif.empty': { en: 'No notifications yet.', bn: 'এখনো কোনো নোটিফিকেশন নেই।' },
+  'notif.announcements': { en: 'Updates', bn: 'আপডেট' },
+  'notif.deadlines': { en: 'Upcoming work', bn: 'আসন্ন কাজ' },
+  'notif.dueIn': { en: 'Due in {time}', bn: 'আর {time} বাকি' },
+
   // landing ----------------------------------------------------------------
   'landing.badge': {
     en: 'Built for freelancers & studios',
@@ -334,6 +341,14 @@ export const messages = {
   'admin.requestedPlan': { en: 'Requested plan', bn: 'অনুরোধকৃত প্ল্যান' },
   'admin.adminBadge': { en: 'Admin', bn: 'অ্যাডমিন' },
   'admin.recentPayments': { en: 'Recent approved payments', bn: 'সাম্প্রতিক অনুমোদিত পেমেন্ট' },
+  'admin.announcements': { en: 'Announcements', bn: 'ঘোষণা' },
+  'admin.announcementHint': {
+    en: 'Publish an update that every user sees in their notification bell.',
+    bn: 'এমন একটি আপডেট প্রকাশ করুন যা সব ব্যবহারকারী নোটিফিকেশন বেল-এ দেখবে।',
+  },
+  'admin.announcementTitle': { en: 'Title', bn: 'শিরোনাম' },
+  'admin.announcementBody': { en: 'Message', bn: 'বার্তা' },
+  'admin.publish': { en: 'Publish', bn: 'প্রকাশ করুন' },
   'admin.apply': { en: 'Apply', bn: 'প্রয়োগ করুন' },
   'admin.expires': { en: 'Expires', bn: 'মেয়াদ শেষ' },
   'admin.noExpiry': { en: 'No expiry', bn: 'মেয়াদ নেই' },
@@ -407,6 +422,7 @@ export const messages = {
   'toast.imported': { en: 'Backup imported', bn: 'ব্যাকআপ ইমপোর্ট হয়েছে' },
   'toast.upgradeRequested': { en: 'Payment submitted', bn: 'পেমেন্ট জমা হয়েছে' },
   'toast.planUpdated': { en: 'Plan updated', bn: 'প্ল্যান আপডেট হয়েছে' },
+  'toast.announcementPublished': { en: 'Announcement published', bn: 'ঘোষণা প্রকাশিত হয়েছে' },
 } as const
 
 export type TranslationKey = keyof typeof messages
