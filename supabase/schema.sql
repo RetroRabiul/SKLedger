@@ -236,6 +236,19 @@ create table if not exists public.announcements (
 create index if not exists announcements_created_at_idx on public.announcements (created_at desc);
 
 -- ---------------------------------------------------------------------------
+-- plan_prices  (admin-editable plan pricing; public read for the landing page)
+-- ---------------------------------------------------------------------------
+create table if not exists public.plan_prices (
+  plan       text primary key check (plan in ('free', 'pro', 'business')),
+  price_bdt  integer not null default 0 check (price_bdt >= 0),
+  updated_at timestamptz not null default now()
+);
+
+insert into public.plan_prices (plan, price_bdt) values
+  ('free', 0), ('pro', 500), ('business', 1500)
+on conflict (plan) do nothing;
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security
 -- ---------------------------------------------------------------------------
 alter table public.profiles         enable row level security;
@@ -246,6 +259,7 @@ alter table public.project_payments enable row level security;
 alter table public.subscriptions    enable row level security;
 alter table public.app_settings     enable row level security;
 alter table public.announcements    enable row level security;
+alter table public.plan_prices      enable row level security;
 
 -- profiles
 drop policy if exists profiles_select on public.profiles;
@@ -321,6 +335,15 @@ create policy announcements_read on public.announcements
 
 drop policy if exists announcements_admin_all on public.announcements;
 create policy announcements_admin_all on public.announcements
+  for all using (public.is_admin()) with check (public.is_admin());
+
+-- plan_prices (anyone can read prices; only admin can change)
+drop policy if exists plan_prices_read on public.plan_prices;
+create policy plan_prices_read on public.plan_prices
+  for select using (true);
+
+drop policy if exists plan_prices_admin_all on public.plan_prices;
+create policy plan_prices_admin_all on public.plan_prices
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- ---------------------------------------------------------------------------
@@ -440,6 +463,10 @@ create trigger projects_touch before update on public.projects
 
 drop trigger if exists appsettings_touch on public.app_settings;
 create trigger appsettings_touch before update on public.app_settings
+  for each row execute function public.set_updated_at();
+
+drop trigger if exists plan_prices_touch on public.plan_prices;
+create trigger plan_prices_touch before update on public.plan_prices
   for each row execute function public.set_updated_at();
 
 -- ---------------------------------------------------------------------------

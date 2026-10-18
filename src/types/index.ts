@@ -125,6 +125,8 @@ export interface AppSettings {
   updated_at?: string
 }
 
+export type PlanPrices = Record<PlanId, number>
+
 export interface Announcement {
   id: string
   title: string

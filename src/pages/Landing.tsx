@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
@@ -15,15 +15,24 @@ import {
 import { useI18n } from '../hooks/useI18n'
 import { useAuth } from '../hooks/useAuth'
 import { PLAN_ORDER, PLANS } from '../config/plans'
+import { defaultPlanPrices, getPlanPrices } from '../services/planPrices'
+import type { PlanPrices } from '../types'
 
 export default function Landing() {
   const { t } = useI18n()
   const { user, loading } = useAuth()
   const navigate = useNavigate()
+  const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
 
   useEffect(() => {
     if (user && !loading) navigate('/dashboard', { replace: true })
   }, [user, loading, navigate])
+
+  useEffect(() => {
+    getPlanPrices()
+      .then(setPrices)
+      .catch((error) => console.error(error))
+  }, [])
 
   const features = [
     { icon: Users, title: t('landing.feature.clients'), description: t('landing.feature.clients.desc') },
@@ -157,7 +166,7 @@ export default function Landing() {
                   )}
                   <h3 className="text-xl font-semibold">{t(`plan.${key}`)}</h3>
                   <p className="mt-2 text-2xl font-bold">
-                    ৳{plan.priceBdt}
+                    ৳{prices[key]}
                     <span className="text-sm font-normal text-muted-foreground">
                       {t('plan.perMonth')}
                     </span>

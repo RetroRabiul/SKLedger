@@ -9,9 +9,10 @@ import {
   type AdminSubscriptionRow,
 } from '../services/admin'
 import { getAppSettings, savePaymentDetails } from '../services/appSettings'
+import { defaultPlanPrices, getPlanPrices, savePlanPrices } from '../services/planPrices'
 import { createAnnouncement, deleteAnnouncement, listAnnouncements } from '../services/announcements'
 import { PLAN_ORDER } from '../config/plans'
-import type { AdminUserRow, Announcement, PaymentChannel, PlanId } from '../types'
+import type { AdminUserRow, Announcement, PaymentChannel, PlanId, PlanPrices } from '../types'
 import { getProofUrl } from '../services/subscriptions'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
@@ -28,6 +29,8 @@ export default function Admin() {
   const [methods, setMethods] = useState<PaymentChannel[]>([])
   const [note, setNote] = useState('')
   const [savingPayment, setSavingPayment] = useState(false)
+  const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
+  const [savingPrices, setSavingPrices] = useState(false)
   const [drafts, setDrafts] = useState<Record<string, { plan: PlanId; days: number }>>({})
   const [announcements, setAnnouncements] = useState<Announcement[]>([])
   const [newTitle, setNewTitle] = useState('')
@@ -36,13 +39,14 @@ export default function Admin() {
 
   const load = () => {
     setLoading(true)
-    Promise.all([listUsers(), listSubscriptions(), getAppSettings(), listAnnouncements()])
-      .then(([u, s, app, ann]) => {
+    Promise.all([listUsers(), listSubscriptions(), getAppSettings(), listAnnouncements(), getPlanPrices()])
+      .then(([u, s, app, ann, p]) => {
         setUsers(u)
         setSubs(s)
         setMethods(app?.payment_methods ?? [])
         setNote(app?.payment_note ?? '')
         setAnnouncements(ann)
+        setPrices(p)
       })
       .catch((error) => toast.error((error as Error).message ?? t('common.error')))
       .finally(() => setLoading(false))
@@ -116,6 +120,19 @@ export default function Admin() {
       toast.error((error as Error).message ?? t('common.error'))
     } finally {
       setSavingPayment(false)
+    }
+  }
+
+  const handleSavePrices = async () => {
+    setSavingPrices(true)
+    try {
+      await savePlanPrices({ ...prices, free: 0 })
+      toast.success(t('toast.saved'))
+      load()
+    } catch (error) {
+      toast.error((error as Error).message ?? t('common.error'))
+    } finally {
+      setSavingPrices(false)
     }
   }
 
@@ -284,6 +301,40 @@ export default function Admin() {
           <button
             onClick={() => void handleSavePayment()}
             disabled={savingPayment}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          >
+            {t('common.save')}
+          </button>
+        </div>
+      </section>
+
+      {/* Plan prices */}
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">{t('admin.planPrices')}</h2>
+        <div className="space-y-4 rounded-xl border bg-card p-5 shadow-sm">
+          <p className="text-xs text-muted-foreground">{t('admin.planPricesHint')}</p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {PLAN_ORDER.map((p) => (
+              <label key={p} className="block">
+                <span className="mb-1 block text-xs font-medium text-muted-foreground">
+                  {t(`plan.${p}`)}
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  value={p === 'free' ? 0 : prices[p]}
+                  disabled={p === 'free'}
+                  onChange={(e) =>
+                    setPrices((prev) => ({ ...prev, [p]: Math.max(0, Number(e.target.value) || 0) }))
+                  }
+                  className="w-full rounded-lg border bg-background px-3 py-2 text-sm disabled:opacity-60"
+                />
+              </label>
+            ))}
+          </div>
+          <button
+            onClick={() => void handleSavePrices()}
+            disabled={savingPrices}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
             {t('common.save')}

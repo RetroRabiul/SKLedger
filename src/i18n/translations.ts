@@ -359,6 +359,11 @@ export const messages = {
     en: 'These details are shown to users when they choose a plan to upgrade.',
     bn: 'ব্যবহারকারী প্ল্যান আপগ্রেড করতে বেছে নিলে এই বিবরণ দেখানো হয়।',
   },
+  'admin.planPrices': { en: 'Plan prices', bn: 'প্ল্যানের মূল্য' },
+  'admin.planPricesHint': {
+    en: 'Prices (BDT) shown on the landing and upgrade pages.',
+    bn: 'ল্যান্ডিং ও আপগ্রেড পেজে দেখানো মূল্য (টাকা)।',
+  },
   'admin.methodLabel': { en: 'Method (e.g. bKash)', bn: 'মাধ্যম (যেমন bKash)' },
   'admin.methodValue': { en: 'Number / account details', bn: 'নম্বর / অ্যাকাউন্ট বিবরণ' },
   'admin.addMethod': { en: 'Add method', bn: 'মাধ্যম যোগ করুন' },

@@ -5,7 +5,8 @@ import Modal from '../components/ui/Modal'
 import { PLANS } from '../config/plans'
 import { getMySubscriptions, requestUpgrade, uploadProof } from '../services/subscriptions'
 import { getAppSettings } from '../services/appSettings'
-import type { AppSettings, PlanId, Subscription } from '../types'
+import { defaultPlanPrices, getPlanPrices } from '../services/planPrices'
+import type { AppSettings, PlanId, PlanPrices, Subscription } from '../types'
 import { useI18n } from '../hooks/useI18n'
 import { useProfile } from '../hooks/useProfile'
 import { formatCurrency, formatDate } from '../utils/format'
@@ -23,6 +24,7 @@ export default function Upgrade() {
   const [file, setFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [app, setApp] = useState<AppSettings | null>(null)
+  const [prices, setPrices] = useState<PlanPrices>(defaultPlanPrices())
 
   const load = () => {
     getMySubscriptions()
@@ -38,6 +40,9 @@ export default function Upgrade() {
         const first = settings?.payment_methods?.[0]
         if (first?.label) setMethod(first.label)
       })
+      .catch((error) => console.error(error))
+    getPlanPrices()
+      .then(setPrices)
       .catch((error) => console.error(error))
   }, [])
 
@@ -59,7 +64,7 @@ export default function Upgrade() {
       if (file) proofUrl = await uploadProof(file)
       await requestUpgrade({
         plan: target as 'pro' | 'business',
-        amount: PLANS[target].priceBdt,
+        amount: prices[target],
         currency: 'BDT',
         method,
         transaction_id: txnId.trim(),
@@ -116,7 +121,7 @@ export default function Upgrade() {
                 )}
               </div>
               <p className="mt-2 text-2xl font-bold">
-                ৳{def.priceBdt}
+                ৳{prices[id]}
                 <span className="text-sm font-normal text-muted-foreground">{t('plan.perMonth')}</span>
               </p>
               <ul className="mt-4 flex-1 space-y-2 text-sm text-muted-foreground">
@@ -228,7 +233,7 @@ export default function Upgrade() {
           )}
           {target && (
             <p className="text-sm text-muted-foreground">
-              {t('common.amount')}: <strong>৳{PLANS[target].priceBdt}</strong>
+              {t('common.amount')}: <strong>৳{target ? prices[target] : 0}</strong>
             </p>
           )}
           <label className="block">
